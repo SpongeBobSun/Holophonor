@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'Holophonor_Example' do
+  pod 'Holophonor', :path => '../'
+
+  target 'Holophonor_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
