@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16E195" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="MediaCollection" representedClassName=".MediaCollection" syncable="YES">
+        <attribute name="mpPersistenceID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="representiveID" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MediaItem" syncable="YES"/>
+        <relationship name="representativeItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MediaItem" syncable="YES"/>
+    </entity>
+    <entity name="MediaItem" representedClassName=".MediaItem" syncable="YES">
+        <attribute name="albumPersistentID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="albumTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="artist" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="artistPersistentID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fileURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="genre" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="genrePersistentID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mpPersistentID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="MediaCollection" positionX="-54" positionY="-9" width="128" height="105"/>
+        <element name="MediaItem" positionX="-63" positionY="-18" width="128" height="180"/>
+    </elements>
+</model>

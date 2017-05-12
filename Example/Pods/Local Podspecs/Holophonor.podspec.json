@@ -1,0 +1,31 @@
+{
+  "name": "Holophonor",
+  "version": "0.1.0",
+  "summary": "A short description of Holophonor.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/sponegbobsun/Holophonor",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "sponegbobsun": "widekuan@outlook.com"
+  },
+  "source": {
+    "git": "https://github.com/sponegbobsun/Holophonor.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "Holophonor/Classes/**/*",
+  "frameworks": [
+    "UIKit",
+    "CoreData",
+    "MediaPlayer",
+    "AVFoundation"
+  ],
+  "resource_bundles": {
+    "Holophonor": "Holophonor/*.xcdatamodeld"
+  }
+}

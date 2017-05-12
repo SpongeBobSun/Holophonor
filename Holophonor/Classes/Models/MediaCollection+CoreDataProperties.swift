@@ -1,0 +1,41 @@
+//
+//  MediaCollection+CoreDataProperties.swift
+//  Pods
+//
+//  Created by bob.sun on 12/05/2017.
+//
+//
+
+import Foundation
+import CoreData
+
+
+extension MediaCollection {
+
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<MediaCollection> {
+        return NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+    }
+
+    @NSManaged public var mpPersistenceID: String?
+    @NSManaged public var representiveID: String?
+    @NSManaged public var items: NSSet?
+    @NSManaged public var representativeItem: MediaItem?
+
+}
+
+// MARK: Generated accessors for items
+extension MediaCollection {
+
+    @objc(addItemsObject:)
+    @NSManaged public func addToItems(_ value: MediaItem)
+
+    @objc(removeItemsObject:)
+    @NSManaged public func removeFromItems(_ value: MediaItem)
+
+    @objc(addItems:)
+    @NSManaged public func addToItems(_ values: NSSet)
+
+    @objc(removeItems:)
+    @NSManaged public func removeFromItems(_ values: NSSet)
+
+}
