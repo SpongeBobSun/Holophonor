@@ -13,7 +13,10 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        Holophonor.instance
+        Holophonor.instance.rescan { 
+            print("----RESCANNED----")
+        }
+        print("viewDidLoad")
         // Do any additional setup after loading the view, typically from a nib.
     }
 

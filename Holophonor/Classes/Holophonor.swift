@@ -10,8 +10,6 @@ open class Holophonor: NSObject {
     var context: NSManagedObjectContext
     var coordinator: NSPersistentStoreCoordinator
     
-    var scannedCache: [Int64: MediaCollection] = [:]
-    
     public static let instance : Holophonor = {
         let ret = Holophonor()
         return ret
@@ -39,20 +37,8 @@ open class Holophonor: NSObject {
         
         context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         context.persistentStoreCoordinator = coordinator
-
         super.init()
-        if !authorized {
-            if #available(iOS 9.3, *) {
-                MPMediaLibrary.requestAuthorization({ (result) in
-                    self.authorized = result == .authorized || result == .restricted
-                    self.reloadIfNeeded()
-                })
-            } else {
-                self.reloadIfNeeded()
-            }
-        } else {
-            self.reloadIfNeeded()
-        }
+
     }
     
     func addLocalDirectory(dir: String) -> Holophonor {
@@ -60,9 +46,30 @@ open class Holophonor: NSObject {
         return self
     }
     
-    func reloadIfNeeded() {
-        let _ = MPMediaLibrary.default().lastModifiedDate
-        self.reloadiTunesBySongs()
+    open func rescan(_ force: Bool = false, complition: @escaping () -> Void) {
+        if !authorized {
+            if #available(iOS 9.3, *) {
+                MPMediaLibrary.requestAuthorization({ (result) in
+                    self.authorized = result == .authorized || result == .restricted
+                    self.reloadIfNeeded(force, complition: complition)
+                })
+            } else {
+                self.reloadIfNeeded(force, complition: complition)
+            }
+        } else {
+            self.reloadIfNeeded(force, complition: complition)
+        }
+    }
+    
+    func reloadIfNeeded(_ force: Bool = false, complition: @escaping () -> Void) {
+        DispatchQueue.global().async {
+            let _ = MPMediaLibrary.default().lastModifiedDate
+            self.reloadiTunesBySongs()
+            self.reloadLocalBySongs()
+            DispatchQueue.main.async {
+                complition()
+            }
+        }
     }
     
     fileprivate func reloadiTunesBySongs() {
@@ -83,15 +90,18 @@ open class Holophonor: NSObject {
             insert.genrePersistentID = "\(song.genrePersistentID.littleEndian)"
             insert.fileURL = song.assetURL?.absoluteString
             insert.mpPersistentID = "\(song.persistentID.littleEndian)"
-            
-            do {
-                try context.save()
-            } catch {
-                print("----Can not save----")
-            }
-            
             addCollectionFromiTunesSong(item: song, wrapped: insert)
         }
+        
+        context.performAndWait {
+            do {
+                try self.context.save()
+            } catch let e as Error {
+                print("----Can not save----")
+                print(e)
+            }
+        }
+        
         //Debug code
         self.getAllSongs()
         self.getAllAlbums()
@@ -99,42 +109,41 @@ open class Holophonor: NSObject {
     }
     
     fileprivate func addCollectionFromiTunesSong(item: MPMediaItem, wrapped: MediaItem) {
-        //Album
-        let albumReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
-        albumReq.predicate = NSPredicate(format: "mpPersistenceID == %@", "\(item.albumPersistentID.littleEndian)")
-        do {
-            let album = try context.fetch(albumReq)
-            if album.count == 0 {
-                //ADD
-                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: context)
-                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: context)
-                
-                let toAdd = MediaCollection(entity: entityCollection!, insertInto: context)
-                toAdd.mpPersistenceID = "\(item.albumPersistentID.littleEndian)"
-                
-                let repItem = MediaItem(entity: entityItem!, insertInto: context)
-                repItem.albumPersistentID = "\(item.albumPersistentID.littleEndian)"
-                repItem.albumTitle = item.albumTitle
-                repItem.title = ""
-                repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
-                repItem.artist = item.artist
-                repItem.genre = item.genre
-                repItem.genrePersistentID = "\(item.genrePersistentID.littleEndian)"
-                toAdd.representativeItem = repItem
-                toAdd.addToItems(wrapped)
-            } else {
-                album.first?.addToItems(wrapped)
-            }
-            
+        context.performAndWait {
+            //Album
+            let albumReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+            albumReq.predicate = NSPredicate(format: "mpPersistenceID == %@", "\(item.albumPersistentID.littleEndian)")
             do {
-                try context.save()
+                var album: [MediaCollection] = []
+                album = try self.context.fetch(albumReq)
+                if album.count == 0 {
+                    //ADD
+                    let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
+                    let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                    
+                    let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                    repItem.albumPersistentID = "\(item.albumPersistentID.littleEndian)"
+                    repItem.albumTitle = item.albumTitle
+                    repItem.title = ""
+                    repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
+                    repItem.artist = item.artist
+                    repItem.genre = item.genre
+                    repItem.genrePersistentID = "\(item.genrePersistentID.littleEndian)"
+                    try self.context.save()
+                    
+                    let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                    toAdd.mpPersistenceID = "\(item.albumPersistentID.littleEndian)"
+                    toAdd.representativeItem = repItem
+                    toAdd.addToItems(wrapped)
+                    try self.context.save()
+                    
+                } else {
+                    album.first?.addToItems(wrapped)
+                }
             } catch {
-                print("----Can not save----")
+                print("----Can not save collection----")
             }
-        } catch let e {
-            print(e)
         }
-        
     }
     
     fileprivate func reloadLocalBySongs() {
@@ -173,6 +182,7 @@ open class Holophonor: NSObject {
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
             ret = result.finalResult ?? []
+            print("-----Scanned \(ret.count)-----")
         } catch let e as Error {
             print(e)
         }
