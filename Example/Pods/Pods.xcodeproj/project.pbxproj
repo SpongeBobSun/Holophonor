@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		010732341EA9FCF70005F664 /* Holophonor.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 010732321EA9FCF70005F664 /* Holophonor.xcdatamodeld */; };
+		018CD4D81EC5A8600033C956 /* MediaItem+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018CD4D71EC5A8600033C956 /* MediaItem+Utils.swift */; };
+		018CD4DA1EC5A8CC0033C956 /* MediaCollection+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018CD4D91EC5A8CC0033C956 /* MediaCollection+Utils.swift */; };
+		01C1E4171EC598D9009A668E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C1E4161EC598D9009A668E /* Constants.swift */; };
 		01E5E1CE1EC2FFE4008F4726 /* MediaItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E5E1CA1EC2FFE4008F4726 /* MediaItem+CoreDataClass.swift */; };
 		01E5E1CF1EC2FFE4008F4726 /* MediaItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E5E1CB1EC2FFE4008F4726 /* MediaItem+CoreDataProperties.swift */; };
 		01E5E1D01EC2FFE4008F4726 /* MediaCollection+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E5E1CC1EC2FFE4008F4726 /* MediaCollection+CoreDataClass.swift */; };
@@ -49,6 +52,9 @@
 /* Begin PBXFileReference section */
 		010732331EA9FCF70005F664 /* Holophonor.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Holophonor.xcdatamodel; sourceTree = "<group>"; };
 		016826611EC56237008C6225 /* 1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.xcdatamodel; sourceTree = "<group>"; };
+		018CD4D71EC5A8600033C956 /* MediaItem+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MediaItem+Utils.swift"; path = "Models/MediaItem+Utils.swift"; sourceTree = "<group>"; };
+		018CD4D91EC5A8CC0033C956 /* MediaCollection+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MediaCollection+Utils.swift"; path = "Models/MediaCollection+Utils.swift"; sourceTree = "<group>"; };
+		01C1E4161EC598D9009A668E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		01E5E1CA1EC2FFE4008F4726 /* MediaItem+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MediaItem+CoreDataClass.swift"; path = "Models/MediaItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		01E5E1CB1EC2FFE4008F4726 /* MediaItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MediaItem+CoreDataProperties.swift"; path = "Models/MediaItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		01E5E1CC1EC2FFE4008F4726 /* MediaCollection+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MediaCollection+CoreDataClass.swift"; path = "Models/MediaCollection+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -139,6 +145,8 @@
 				01E5E1CB1EC2FFE4008F4726 /* MediaItem+CoreDataProperties.swift */,
 				01E5E1CC1EC2FFE4008F4726 /* MediaCollection+CoreDataClass.swift */,
 				01E5E1CD1EC2FFE4008F4726 /* MediaCollection+CoreDataProperties.swift */,
+				018CD4D71EC5A8600033C956 /* MediaItem+Utils.swift */,
+				018CD4D91EC5A8CC0033C956 /* MediaCollection+Utils.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -218,6 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				01E5E1BD1EC2FCFC008F4726 /* Models */,
+				01C1E4161EC598D9009A668E /* Constants.swift */,
 				675A25A439C184269981249A6742E404 /* Holophonor.swift */,
 			);
 			path = Classes;
@@ -441,6 +450,9 @@
 				9F18DC79421280661FAEB9F0B38FFCC6 /* Holophonor-dummy.m in Sources */,
 				01E5E1D01EC2FFE4008F4726 /* MediaCollection+CoreDataClass.swift in Sources */,
 				5FAFB981E88F10AF20A2C08873422DBF /* Holophonor.swift in Sources */,
+				01C1E4171EC598D9009A668E /* Constants.swift in Sources */,
+				018CD4DA1EC5A8CC0033C956 /* MediaCollection+Utils.swift in Sources */,
+				018CD4D81EC5A8600033C956 /* MediaItem+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

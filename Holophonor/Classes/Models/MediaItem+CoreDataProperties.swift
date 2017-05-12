@@ -25,5 +25,6 @@ extension MediaItem {
     @NSManaged public var genrePersistentID: String?
     @NSManaged public var mpPersistentID: String?
     @NSManaged public var title: String?
+    @NSManaged public var mediaType: Int64
 
 }

@@ -13,8 +13,17 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        Holophonor.instance.rescan { 
+        let holo = Holophonor.instance
+        holo.rescan {
             print("----RESCANNED----")
+            //Debug code
+            let _ = holo.getAllSongs()
+            let _ = holo.getAllAlbums()
+            let _ = holo.getAllArtists()
+            let album = holo.getAlbumBy(name: "Hot Fuss")
+            print(album)
+            let albums = holo.getAlbumsBy(artist: "The Killers")
+            print(albums)
         }
         print("viewDidLoad")
         // Do any additional setup after loading the view, typically from a nib.

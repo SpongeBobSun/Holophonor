@@ -90,6 +90,8 @@ open class Holophonor: NSObject {
             insert.genrePersistentID = "\(song.genrePersistentID.littleEndian)"
             insert.fileURL = song.assetURL?.absoluteString
             insert.mpPersistentID = "\(song.persistentID.littleEndian)"
+            insert.mediaType = Int64(MediaSource.iTunes.rawValue)
+            
             addCollectionFromiTunesSong(item: song, wrapped: insert)
         }
         
@@ -101,10 +103,6 @@ open class Holophonor: NSObject {
                 print(e)
             }
         }
-        
-        //Debug code
-        self.getAllSongs()
-        self.getAllAlbums()
         return
     }
     
@@ -112,7 +110,7 @@ open class Holophonor: NSObject {
         context.performAndWait {
             //Album
             let albumReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
-            albumReq.predicate = NSPredicate(format: "mpPersistenceID == %@", "\(item.albumPersistentID.littleEndian)")
+            albumReq.predicate = NSPredicate(format: "(mpPersistenceID == %@) AND (collectionType == %llu)", "\(item.albumPersistentID.littleEndian)", Int64(CollectionType.Album.rawValue))
             do {
                 var album: [MediaCollection] = []
                 album = try self.context.fetch(albumReq)
@@ -129,22 +127,57 @@ open class Holophonor: NSObject {
                     repItem.artist = item.artist
                     repItem.genre = item.genre
                     repItem.genrePersistentID = "\(item.genrePersistentID.littleEndian)"
+                    repItem.mediaType = Int64(MediaSource.Representative.rawValue)
+                    
                     try self.context.save()
                     
                     let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
                     toAdd.mpPersistenceID = "\(item.albumPersistentID.littleEndian)"
                     toAdd.representativeItem = repItem
+                    toAdd.representativeTitle = item.albumTitle
                     toAdd.addToItems(wrapped)
+                    toAdd.collectionType = Int64(CollectionType.Album.rawValue)
                     try self.context.save()
                     
                 } else {
+                    //APPEND
                     album.first?.addToItems(wrapped)
                 }
             } catch {
-                print("----Can not save collection----")
+                print("----Can not save album collection----")
             }
+            
+            //Artist
+            let artistReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+            artistReq.predicate = NSPredicate(format: "(mpPersistenceID == %@) AND (collectionType == %llu)", "\(item.artistPersistentID)", Int64(CollectionType.Artist.rawValue))
+            do {
+                var artist: [MediaCollection] = []
+                artist = try self.context.fetch(artistReq)
+                if artist.count == 0 {
+                    let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
+                    let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                    
+                    let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                    repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
+                    repItem.artist = item.artist
+                    
+                    try self.context.save()
+                    
+                    let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                    toAdd.mpPersistenceID = "\(item.artistPersistentID.littleEndian)"
+                    toAdd.representativeItem = repItem
+                    toAdd.representativeTitle = item.artist
+                    toAdd.collectionType = Int64(CollectionType.Artist.rawValue)
+                    try self.context.save()
+                }
+            } catch {
+                print("----Can not save artist collection----")
+            }
+
         }
+        
     }
+    
     
     fileprivate func reloadLocalBySongs() {
         
@@ -179,18 +212,76 @@ open class Holophonor: NSObject {
     public func getAllSongs() -> [MediaItem] {
         var ret: [MediaItem] = []
         let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
+        req.predicate = NSPredicate(format: "(mediaType == %llu) OR (mediaType == %llu)", MediaSource.iTunes.rawValue, MediaSource.Local.rawValue)
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
             ret = result.finalResult ?? []
-            print("-----Scanned \(ret.count)-----")
-        } catch let e as Error {
+            print("-----Scanned \(ret.count) songs -----")
+        } catch let e {
             print(e)
         }
         return ret
     }
     
-    public func getAllAlbums() -> [MediaItem] {
-        var ret: [MediaItem] = []
+    public func getAllAlbums() -> [MediaCollection] {
+        var ret: [MediaCollection] = []
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let filter = NSPredicate(format: "collectionType == %llu ", CollectionType.Album.rawValue)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult ?? []
+            print("-----Scanned \(ret.count) albums -----")
+        } catch {
+            
+        }
         return ret
     }
+    
+    public func getAllArtists() -> [MediaCollection] {
+        var ret: [MediaCollection] = []
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let filter = NSPredicate(format: "collectionType == %llu ", CollectionType.Artist.rawValue)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult ?? []
+            print("-----Scanned \(ret.count) artists -----")
+        } catch {
+            
+        }
+        return ret
+    }
+    
+    public func getAlbumBy(name: String) -> MediaCollection? {
+        var ret: MediaCollection? = nil
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeTitle == %@) ",
+                                 CollectionType.Album.rawValue,
+                                 name)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult?.first
+        } catch {
+            
+        }
+        return ret
+    }
+    
+    public func getAlbumsBy(artist: String) -> [MediaCollection] {
+        var ret: [MediaCollection] = []
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.artist == %@)",
+                                    CollectionType.Album.rawValue,
+                                    artist)
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult ?? []
+        } catch  {
+            
+        }
+        return ret
+    }
+
 }
