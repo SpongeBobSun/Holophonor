@@ -2,6 +2,7 @@ import Foundation
 
 import MediaPlayer
 import CoreData
+import AVFoundation
 
 open class Holophonor: NSObject {
     
@@ -41,7 +42,7 @@ open class Holophonor: NSObject {
 
     }
     
-    func addLocalDirectory(dir: String) -> Holophonor {
+    open func addLocalDirectory(dir: String) -> Holophonor {
         localDirectories.append(dir)
         return self
     }
@@ -64,15 +65,15 @@ open class Holophonor: NSObject {
     func reloadIfNeeded(_ force: Bool = false, complition: @escaping () -> Void) {
         DispatchQueue.global().async {
             let _ = MPMediaLibrary.default().lastModifiedDate
-            self.reloadiTunesBySongs()
-            self.reloadLocalBySongs()
+            self.reloadiTunes()
+            self.reloadLocal()
             DispatchQueue.main.async {
                 complition()
             }
         }
     }
     
-    fileprivate func reloadiTunesBySongs() {
+    fileprivate func reloadiTunes() {
         
         let songs = MPMediaQuery.songs().items ?? []
         if songs.count > 0 {
@@ -141,6 +142,9 @@ open class Holophonor: NSObject {
                     
                 } else {
                     //APPEND
+                    if album.first?.mpPersistenceID == nil {
+                        album.first?.mpPersistenceID = "\(item.albumPersistentID.littleEndian)"
+                    }
                     album.first?.addToItems(wrapped)
                 }
             } catch {
@@ -179,12 +183,111 @@ open class Holophonor: NSObject {
     }
     
     
-    fileprivate func reloadLocalBySongs() {
+    fileprivate func reloadLocal() {
+        let fm = FileManager.default
+        for dir in localDirectories {
+            let files: [String]
+            do {
+                try files = fm.contentsOfDirectory(atPath: dir)
+            } catch {
+                continue
+            }
+            for file in files {
+                if file.hasSuffix("m4a") || file.hasSuffix("mp3") || file.hasSuffix("wav") {
+                    addItemFromFile(path: dir + "/" + file)
+                }
+            }
+        }
         
+        context.performAndWait {
+            do {
+                try self.context.save()
+            } catch let e as Error {
+                print("----Can not save----")
+                print(e)
+            }
+        }
     }
     
-    fileprivate func addCollectionFromLocalSong() {
+    fileprivate func addItemFromFile(path: String) {
+        let asset: AVAsset = AVAsset(url: URL(fileURLWithPath: path))
+        let entity = NSEntityDescription.entity(forEntityName: "MediaItem", in: context)
+        let insert = MediaItem(entity: entity!, insertInto: context)
+        insert.mediaType = Int64(MediaSource.Local.rawValue)
+        insert.fileURL = URL(fileURLWithPath: path).absoluteString
         
+        let fmts = asset.availableMetadataFormats
+        for fmt in fmts {
+            let values = asset.metadata(forFormat: fmt)
+            for value in values {
+                if (value.commonKey == nil) {
+                    continue
+                } else {
+                    let commonKey = value.commonKey!
+                    switch commonKey {
+                    case AVMetadataCommonKeyTitle:
+                        insert.title = value.stringValue
+                        break
+                    case AVMetadataCommonKeyAlbumName:
+                        insert.albumTitle = value.stringValue
+                        break
+                    case AVMetadataCommonKeyArtist:
+                        insert.artist = value.stringValue
+                        break
+                    case AVMetadataCommonKeyType:
+                        insert.genre = value.stringValue
+                    default:
+                        break
+                    }
+                }
+                print("key- " + (value.commonKey ?? "undefined")! + " value- " + (value.stringValue ?? "undefined")!)
+            }
+            print("-----")
+        }
+        addCollectionFromLocalSong(item: insert)
+    }
+    
+    fileprivate func addCollectionFromLocalSong(item: MediaItem) {
+        context.performAndWait {
+            let albumReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+            albumReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (representativeItem.artist == %@) AND (collectionType == %llu)",
+                                             item.albumTitle ?? "",
+                                             item.artist ?? "",
+                                             Int64(CollectionType.Album.rawValue))
+            
+            do {
+                var album: [MediaCollection] = []
+                album = try self.context.fetch(albumReq)
+                if album.count == 0 {
+                    //ADD
+                    let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
+                    let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                    
+                    let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                    repItem.albumTitle = item.albumTitle
+                    repItem.artist = item.artist
+                    repItem.genre = item.genre
+                    repItem.mediaType = Int64(MediaSource.Representative.rawValue)
+                    
+                    try self.context.save()
+                    
+                    let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                    toAdd.representativeItem = repItem
+                    toAdd.representativeTitle = item.albumTitle
+                    toAdd.addToItems(item)
+                    toAdd.collectionType = Int64(CollectionType.Album.rawValue)
+                    try self.context.save()
+                    
+                } else {
+                    //APPEND
+                    album.first?.addToItems(item)
+                }
+            } catch {
+                print("----Can not save album collection----")
+            }
+
+            
+        }
     }
     
     fileprivate func dropAll() {
@@ -283,5 +386,7 @@ open class Holophonor: NSObject {
         }
         return ret
     }
+    
+    
 
 }
