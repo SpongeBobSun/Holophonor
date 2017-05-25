@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		010732341EA9FCF70005F664 /* Holophonor.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 010732321EA9FCF70005F664 /* Holophonor.xcdatamodeld */; };
+		017DAED81ED69AC900046933 /* Holophonor+Accessors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017DAED71ED69AC900046933 /* Holophonor+Accessors.swift */; };
 		018CD4D81EC5A8600033C956 /* MediaItem+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018CD4D71EC5A8600033C956 /* MediaItem+Utils.swift */; };
 		018CD4DA1EC5A8CC0033C956 /* MediaCollection+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018CD4D91EC5A8CC0033C956 /* MediaCollection+Utils.swift */; };
 		01C1E4171EC598D9009A668E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C1E4161EC598D9009A668E /* Constants.swift */; };
@@ -52,6 +53,7 @@
 /* Begin PBXFileReference section */
 		010732331EA9FCF70005F664 /* Holophonor.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Holophonor.xcdatamodel; sourceTree = "<group>"; };
 		016826611EC56237008C6225 /* 1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.xcdatamodel; sourceTree = "<group>"; };
+		017DAED71ED69AC900046933 /* Holophonor+Accessors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Holophonor+Accessors.swift"; path = "Categories/Holophonor+Accessors.swift"; sourceTree = "<group>"; };
 		018CD4D71EC5A8600033C956 /* MediaItem+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MediaItem+Utils.swift"; path = "Models/MediaItem+Utils.swift"; sourceTree = "<group>"; };
 		018CD4D91EC5A8CC0033C956 /* MediaCollection+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MediaCollection+Utils.swift"; path = "Models/MediaCollection+Utils.swift"; sourceTree = "<group>"; };
 		01C1E4161EC598D9009A668E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -138,6 +140,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		017DAED61ED69AA100046933 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				017DAED71ED69AC900046933 /* Holophonor+Accessors.swift */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		01E5E1BD1EC2FCFC008F4726 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -225,6 +235,7 @@
 		4B4C2D47707FCF0203182577ADF590A1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				017DAED61ED69AA100046933 /* Categories */,
 				01E5E1BD1EC2FCFC008F4726 /* Models */,
 				01C1E4161EC598D9009A668E /* Constants.swift */,
 				675A25A439C184269981249A6742E404 /* Holophonor.swift */,
@@ -450,6 +461,7 @@
 				9F18DC79421280661FAEB9F0B38FFCC6 /* Holophonor-dummy.m in Sources */,
 				01E5E1D01EC2FFE4008F4726 /* MediaCollection+CoreDataClass.swift in Sources */,
 				5FAFB981E88F10AF20A2C08873422DBF /* Holophonor.swift in Sources */,
+				017DAED81ED69AC900046933 /* Holophonor+Accessors.swift in Sources */,
 				01C1E4171EC598D9009A668E /* Constants.swift in Sources */,
 				018CD4DA1EC5A8CC0033C956 /* MediaCollection+Utils.swift in Sources */,
 				018CD4D81EC5A8600033C956 /* MediaItem+Utils.swift in Sources */,

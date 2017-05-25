@@ -8,13 +8,13 @@
 
 import UIKit
 
-public enum MediaSource: Int {
+public enum MediaSource: Int64 {
     case iTunes = 1
     case Local
     case Representative
 }
 
-public enum CollectionType: Int {
+public enum CollectionType: Int64 {
     case Album = 1
     case Artist
     case Genre

@@ -12,4 +12,8 @@ extension MediaCollection {
     open func getArtwork() -> UIImage? {
         return nil
     }
+    
+    open func getCollectionType() -> CollectionType {
+        return CollectionType(rawValue: self.collectionType)!
+    }
 }
