@@ -162,7 +162,7 @@ open class Holophonor: NSObject {
                     let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
                     repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
                     repItem.artist = item.artist
-                    
+                    repItem.mediaType = MediaSource.Representative.rawValue
                     
                     
                     let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
@@ -171,6 +171,10 @@ open class Holophonor: NSObject {
                     toAdd.representativeTitle = item.artist
                     toAdd.collectionType = CollectionType.Artist.rawValue
                     
+                } else {
+                    if artist.first?.mpPersistenceID == nil {
+                        artist.first?.mpPersistenceID = "\(item.artistPersistentID.littleEndian)"
+                    }
                 }
             } catch {
                 print("----Can not save artist collection----")
@@ -190,8 +194,7 @@ open class Holophonor: NSObject {
                     let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
                     repItem.genrePersistentID = "\(item.genrePersistentID.littleEndian)"
                     repItem.genre = item.genre
-                    
-                    
+                    repItem.mediaType = MediaSource.Representative.rawValue
                     
                     let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
                     toAdd.mpPersistenceID = "\(item.genrePersistentID.littleEndian)"
@@ -199,6 +202,10 @@ open class Holophonor: NSObject {
                     toAdd.representativeTitle = item.genre
                     toAdd.collectionType = CollectionType.Genre.rawValue
                     
+                } else {
+                    if genre.first?.mpPersistenceID == nil {
+                        genre.first?.mpPersistenceID = "\(item.genrePersistentID.littleEndian)"
+                    }
                 }
             } catch {
                 print("----Can not save genre collection----")
@@ -274,6 +281,7 @@ open class Holophonor: NSObject {
     
     fileprivate func addCollectionFromLocalSong(item: MediaItem) {
         context.performAndWait {
+            //Album
             let albumReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
             albumReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (representativeItem.artist == %@) AND (collectionType == %llu)",
                                              item.albumTitle ?? "",
@@ -305,10 +313,56 @@ open class Holophonor: NSObject {
                     album.first?.addToItems(item)
                 }
             } catch {
-                print("----Can not save album collection----")
+                print("----Can not save album collection for localfile----")
+            }
+            
+            //Artist
+            let artistReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+            artistReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (collectionType == %llu)", item.artist!, CollectionType.Artist.rawValue)
+            do {
+                var artist: [MediaCollection] = []
+                artist = try self.context.fetch(artistReq)
+                if artist.count == 0 {
+                    let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
+                    let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                    
+                    let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                    repItem.artist = item.artist
+                    repItem.mediaType = MediaSource.Representative.rawValue
+                    
+                    let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                    toAdd.representativeTitle = item.artist
+                    toAdd.representativeItem = repItem
+                    toAdd.representativeTitle = item.artist
+                    toAdd.collectionType = CollectionType.Artist.rawValue
+                }
+            } catch {
+                print("----Can not save artist collection----")
+            }
+            
+            //Genre
+            let genreReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+            genreReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (collectionType == %llu)", item.genre!, CollectionType.Genre.rawValue)
+            do {
+                var genre: [MediaCollection] = []
+                genre = try self.context.fetch(genreReq)
+                if genre.count == 0 {
+                    let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
+                    let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                    let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                    repItem.genre = item.genre
+                    repItem.mediaType = MediaSource.Representative.rawValue
+                    
+                    let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                    toAdd.representativeTitle = item.genre
+                    toAdd.representativeItem = repItem
+                    toAdd.representativeTitle = item.genre
+                    toAdd.collectionType = CollectionType.Genre.rawValue
+                }
+            } catch {
+                print("----Can not save genre collection----")
             }
 
-            
         }
     }
     

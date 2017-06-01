@@ -57,6 +57,28 @@ extension Holophonor {
         return ret
     }
     
+    public func getAllGenres() -> [MediaCollection] {
+        var ret: [MediaCollection] = []
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let filter = NSPredicate(format: "collectionType == %llu", CollectionType.Genre.rawValue)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult ?? []
+        } catch  {
+            print(error)
+        }
+        return ret
+    }
+    
+    public func getGenreBy(name: String) -> MediaCollection? {
+        var ret: MediaCollection? = nil
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let filter = NSPredicate(format: "(collectionType == %llu) AND ()", CollectionType.Genre.rawValue)
+        
+        return ret
+    }
+    
     public func getAlbumBy(name: String) -> MediaCollection? {
         var ret: MediaCollection? = nil
         let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
