@@ -8,11 +8,7 @@
 
 import UIKit
 
-extension MediaCollection {
-    open func getArtwork() -> UIImage? {
-        return nil
-    }
-    
+extension MediaCollection {    
     open func getCollectionType() -> CollectionType {
         return CollectionType(rawValue: self.collectionType)!
     }
