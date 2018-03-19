@@ -8,8 +8,28 @@
 
 import Foundation
 import CoreData
+import MediaPlayer
 
 
 public class MediaItem: NSManagedObject {
-
+    var _itemArtwork: UIImage? = nil;
+    
+    open func getArtworkWithSize(size: CGSize) -> UIImage? {
+        if _itemArtwork != nil {
+            return _itemArtwork;
+        }
+        switch self.mediaType {
+        case MediaSource.iTunes.rawValue:
+            let predictor = MPMediaPropertyPredicate.init(value: self.mpPersistentID, forProperty: MPMediaItemPropertyPersistentID, comparisonType: .equalTo);
+            let query = MPMediaQuery.songs()
+            query.addFilterPredicate(predictor)
+            _itemArtwork = query.items?.first?.artwork?.image(at: size)
+            break
+        case MediaSource.Local.rawValue:
+            break
+        default:
+            break
+        }
+        return _itemArtwork
+    }
 }

@@ -382,7 +382,7 @@ open class Holophonor: NSObject {
             
             //Genre
             let genreReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
-            genreReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (collectionType == %llu)", item.genre!, CollectionType.Genre.rawValue)
+            genreReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (collectionType == %llu)", item.genre ?? "Unkown Genre", CollectionType.Genre.rawValue)
             
             do {
                 var result: [MediaCollection] = []

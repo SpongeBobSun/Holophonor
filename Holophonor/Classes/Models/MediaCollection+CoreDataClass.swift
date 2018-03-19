@@ -11,5 +11,5 @@ import CoreData
 
 
 public class MediaCollection: NSManagedObject {
-
+    let _collectionArtwork: UIImage? = nil;
 }
