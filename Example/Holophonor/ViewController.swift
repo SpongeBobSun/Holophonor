@@ -14,23 +14,32 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let holo = Holophonor.instance
-        holo.addLocalDirectory(dir: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
+        let _ = holo.addLocalDirectory(dir: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
         holo.rescan {
             print("----RESCANNED----")
             //Debug code
-//            let _ = holo.getAllSongs()
-//            let _ = holo.getAllAlbums()
-//            let _ = holo.getAllArtists()
             let album = holo.getAlbumBy(name: "Hot Fuss")
-            print(album)
+            print(album ?? "Empty Album list")
             let albums = holo.getAlbumsBy(artist: "The Killers")
             print(albums)
             
             let album1 = holo.getAlbumBy(name: "The History Of Rock")
             for item in (album1?.items)! {
-                print((item as! MediaItem).title)
-                print((item as! MediaItem).fileURL)
+                print((item as! MediaItem).title ?? "Empty title")
+                print((item as! MediaItem).fileURL ?? "Empty file url")
             }
+            let gotById = holo.getAlbumBy(identifier: (album1?.persistentID)!)
+            
+            for each in (gotById?.items)! {
+                print((each as! MediaItem).title ?? "empty")
+            }
+            
+            let genres = holo.getAllGenres()
+            let _ = genres.flatMap({ (each) -> MediaCollection? in
+//                print(each.representativeItem?.genre ?? "Empty genre")
+                return each
+            })
+            
         }
         print("viewDidLoad")
         // Do any additional setup after loading the view, typically from a nib.

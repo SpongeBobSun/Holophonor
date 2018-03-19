@@ -109,28 +109,17 @@ extension Holophonor {
         return ret
     }
     
-    public func getArtistBy(identifier: NSManagedObjectID) -> MediaCollection? {
+    public func getAlbumBy(identifier: String) -> MediaCollection? {
         var ret: MediaCollection? = nil
-        if identifier.isTemporaryID {
-            return ret
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let filter = NSPredicate(format: "(collectionType == %llu) AND (persistentID == %@)", CollectionType.Album.rawValue, identifier)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult?.first
+        } catch {
+            print(error)
         }
-        ret = context.object(with: identifier) as? MediaCollection
-        if ret == nil || ret?.getCollectionType() != CollectionType.Artist {
-            ret = nil
-        }
-        return ret
-    }
-    
-    public func getAlbumBy(identifier: NSManagedObjectID) -> MediaCollection? {
-        var ret: MediaCollection? = nil
-        if identifier.isTemporaryID {
-            return ret
-        }
-        ret = context.object(with: identifier) as? MediaCollection
-        if ret == nil || ret?.getCollectionType() != CollectionType.Album {
-            ret = nil
-        }
-        
         return ret
     }
     
@@ -146,6 +135,15 @@ extension Holophonor {
         } catch  {
             
         }
+        return ret
+    }
+    
+    public func getArtistsBy(genre: String) -> [MediaCollection] {
+        return []
+    }
+    public func getAlbumsBy(genre: String) -> [MediaCollection] {
+        var ret: [MediaCollection] = []
+        
         return ret
     }
 }

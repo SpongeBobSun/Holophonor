@@ -3,6 +3,7 @@
     <entity name="MediaCollection" representedClassName=".MediaCollection" syncable="YES">
         <attribute name="collectionType" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="mpPersistenceID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="persistentID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="representativeID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="representativeTitle" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MediaItem" syncable="YES"/>
@@ -18,10 +19,11 @@
         <attribute name="genrePersistentID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mediaType" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="mpPersistentID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="persistentID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="MediaCollection" positionX="-54" positionY="-9" width="128" height="135"/>
-        <element name="MediaItem" positionX="-63" positionY="-18" width="128" height="195"/>
+        <element name="MediaCollection" positionX="-54" positionY="-9" width="128" height="150"/>
+        <element name="MediaItem" positionX="-63" positionY="-18" width="128" height="210"/>
     </elements>
 </model>

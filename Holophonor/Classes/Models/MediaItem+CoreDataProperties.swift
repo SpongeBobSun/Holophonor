@@ -1,8 +1,8 @@
 //
 //  MediaItem+CoreDataProperties.swift
-//  Pods
+//  
 //
-//  Created by bob.sun on 12/05/2017.
+//  Created by bob.sun on 01/06/2017.
 //
 //
 
@@ -23,8 +23,9 @@ extension MediaItem {
     @NSManaged public var fileURL: String?
     @NSManaged public var genre: String?
     @NSManaged public var genrePersistentID: String?
+    @NSManaged public var mediaType: Int64
     @NSManaged public var mpPersistentID: String?
     @NSManaged public var title: String?
-    @NSManaged public var mediaType: Int64
+    @NSManaged public var persistentID: String?
 
 }

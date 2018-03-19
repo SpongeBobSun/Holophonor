@@ -1,8 +1,8 @@
 //
 //  MediaCollection+CoreDataProperties.swift
-//  Pods
+//  
 //
-//  Created by bob.sun on 12/05/2017.
+//  Created by bob.sun on 01/06/2017.
 //
 //
 
@@ -20,6 +20,7 @@ extension MediaCollection {
     @NSManaged public var mpPersistenceID: String?
     @NSManaged public var representativeID: String?
     @NSManaged public var representativeTitle: String?
+    @NSManaged public var persistentID: String?
     @NSManaged public var items: NSSet?
     @NSManaged public var representativeItem: MediaItem?
 
