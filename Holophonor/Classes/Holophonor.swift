@@ -281,22 +281,22 @@ open class Holophonor: NSObject {
                 } else {
                     let commonKey = value.commonKey!
                     switch commonKey {
-                    case AVMetadataCommonKeyTitle:
+                    case AVMetadataKey.commonKeyTitle:
                         insert.title = value.stringValue
                         break
-                    case AVMetadataCommonKeyAlbumName:
+                    case AVMetadataKey.commonKeyAlbumName:
                         insert.albumTitle = value.stringValue
                         break
-                    case AVMetadataCommonKeyArtist:
+                    case AVMetadataKey.commonKeyArtist:
                         insert.artist = value.stringValue
                         break
-                    case AVMetadataCommonKeyType:
+                    case AVMetadataKey.commonKeyType:
                         insert.genre = value.stringValue
                     default:
                         break
                     }
                 }
-                print("key- " + (value.commonKey ?? "undefined")! + " value- " + (value.stringValue ?? "undefined")!)
+//                print("key- " + value.commonKey ?? "undefined" + " value- " + value.stringValue ?? "undefined")
             }
             print("-----")
         }

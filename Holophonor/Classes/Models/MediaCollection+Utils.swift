@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension MediaCollection {    
+extension MediaCollection {
     open func getCollectionType() -> CollectionType {
         return CollectionType(rawValue: self.collectionType)!
     }
