@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 import MediaPlayer
+import AVFoundation
 
 
 public class MediaItem: NSManagedObject {
@@ -26,6 +27,11 @@ public class MediaItem: NSManagedObject {
             _itemArtwork = query.items?.first?.artwork?.image(at: size)
             break
         case MediaSource.Local.rawValue:
+            let asset = AVAsset.init(url: URL.init(string: self.fileURL!)!)
+            let artworks = AVMetadataItem.metadataItems(from: asset.metadata, withKey: AVMetadataKey.commonKeyArtwork, keySpace: AVMetadataKeySpace.common);
+            for item in artworks {
+                _itemArtwork = UIImage.init(data: item.dataValue!)
+            }
             break
         default:
             break
