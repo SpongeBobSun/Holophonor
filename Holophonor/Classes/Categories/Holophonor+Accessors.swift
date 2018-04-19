@@ -20,7 +20,9 @@ extension Holophonor {
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
             ret = result.finalResult ?? []
-            print("-----Scanned \(ret.count) songs -----")
+            #if DEBUG
+                print("-----Scanned \(ret.count) songs -----")
+            #endif
         } catch let e {
             print(e)
         }
@@ -35,7 +37,9 @@ extension Holophonor {
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
             ret = result.finalResult ?? []
-            print("-----Scanned \(ret.count) albums -----")
+            #if DEBUG
+                print("-----Scanned \(ret.count) albums -----")
+            #endif
         } catch {
             
         }
@@ -50,7 +54,9 @@ extension Holophonor {
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
             ret = result.finalResult ?? []
-            print("-----Scanned \(ret.count) artists -----")
+            #if DEBUG
+                print("-----Scanned \(ret.count) artists -----")
+            #endif
         } catch {
             
         }
@@ -75,7 +81,13 @@ extension Holophonor {
         var ret: MediaCollection? = nil
         let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
         let filter = NSPredicate(format: "(collectionType == %llu) AND ()", CollectionType.Genre.rawValue)
-        
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult?.first
+        } catch {
+            print(error)
+        }
         return ret
     }
     
@@ -129,21 +141,45 @@ extension Holophonor {
         req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.artist == %@)",
                                     CollectionType.Album.rawValue,
                                     artist)
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
-            ret = result.finalResult ?? []
-        } catch  {
-            
+        context.performAndWait {
+            do {
+                let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+                ret = result.finalResult ?? []
+            } catch  {
+                #if DEBUG
+                    print(error)
+                #endif
+            }
         }
         return ret
     }
     
     public func getArtistsBy(genre: String) -> [MediaCollection] {
-        return []
+        var ret: [MediaCollection] = []
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.genre == %@)",
+                                    CollectionType.Artist.rawValue,
+                                    genre)
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult ?? []
+        } catch {
+            print(error)
+        }
+        return ret;
     }
     public func getAlbumsBy(genre: String) -> [MediaCollection] {
         var ret: [MediaCollection] = []
-        
-        return ret
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.genre == %@)",
+                                    CollectionType.Album.rawValue,
+                                    genre)
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult ?? []
+        } catch {
+            print(error)
+        }
+        return ret;
     }
 }

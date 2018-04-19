@@ -22,4 +22,5 @@ public enum CollectionType: Int64 {
 
 class Constants: NSObject {
     public static let udKeyLastUpdated              = "udKeyLastUpdated"
+    
 }

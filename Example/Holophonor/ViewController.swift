@@ -23,22 +23,50 @@ class ViewController: UIViewController {
             let albums = holo.getAlbumsBy(artist: "The Killers")
             print(albums)
             
-            let album1 = holo.getAlbumBy(name: "The History Of Rock")
-            for item in (album1?.items)! {
-                print((item as! MediaItem).title ?? "Empty title")
-                print((item as! MediaItem).fileURL ?? "Empty file url")
-            }
-            let gotById = holo.getAlbumBy(identifier: (album1?.persistentID)!)
+            let gotById = holo.getAlbumBy(identifier: (album?.persistentID)!)
             
             for each in (gotById?.items)! {
                 print((each as! MediaItem).title ?? "empty")
             }
             
+            let pavementAlbums = holo.getAlbumsBy(artist: "Pavement")
+            for eachAlbum in pavementAlbums {
+                print("---album by pavement---")
+                print(eachAlbum.representativeItem?.albumTitle);
+                if eachAlbum.items?.count == 0 {
+                    print("empty")
+                }
+                for each in eachAlbum.items! {
+                    let item = each as! MediaItem
+                    print("-------- song by pavement --------")
+                    print(item.fileURL ?? "Unkown File Url");
+                    print(item.title ?? "Unkown Title");
+                    print(item.artist ?? "Unkown Artist");
+                    print(item.genre ?? "Unkown Genre");
+//                    let cover = item.getArtworkWithSize(size:CGSize.init(width: 200, height: 200))
+//                    if (cover != nil) {
+//                        print(cover)
+//                    }
+                    print("----------------------------------")
+                }
+            }
+            
+            print("-------All Genres----------")
             let genres = holo.getAllGenres()
-            let _ = genres.flatMap({ (each) -> MediaCollection? in
-//                print(each.representativeItem?.genre ?? "Empty genre")
-                return each
-            })
+            for each in genres {
+//                print(each.representativeItem?.genre)
+            }
+            print("---------------------------")
+            
+            let artists = holo.getArtistsBy(genre: "Rap")
+            for each in artists {
+                print(each.representativeItem?.artist)
+            }
+            
+            let albumsByGenre = holo.getAlbumsBy(genre: "Rap")
+            for each in albumsByGenre {
+                print(each.representativeItem?.albumTitle)
+            }
             
         }
         print("viewDidLoad")
