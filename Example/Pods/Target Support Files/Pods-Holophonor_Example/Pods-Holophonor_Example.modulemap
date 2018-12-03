@@ -1,6 +1,0 @@
-framework module Pods_Holophonor_Example {
-  umbrella header "Pods-Holophonor_Example-umbrella.h"
-
-  export *
-  module * { export * }
-}

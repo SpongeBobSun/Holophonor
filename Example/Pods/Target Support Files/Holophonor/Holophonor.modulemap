@@ -1,6 +1,0 @@
-framework module Holophonor {
-  umbrella header "Holophonor-umbrella.h"
-
-  export *
-  module * { export * }
-}
