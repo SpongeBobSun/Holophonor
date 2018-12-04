@@ -16,12 +16,28 @@ extension Holophonor {
     public func getAllSongs() -> [MediaItem] {
         var ret: [MediaItem] = []
         let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
-        req.predicate = NSPredicate(format: "(mediaType == %llu) OR (mediaType == %llu)", MediaSource.iTunes.rawValue, MediaSource.Local.rawValue)
+        req.predicate = NSPredicate(format: "(mediaType < %llu)", MediaSource.Representative.rawValue)
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
             ret = result.finalResult ?? []
             #if DEBUG
                 print("-----Scanned \(ret.count) songs -----")
+            #endif
+        } catch let e {
+            print(e)
+        }
+        return ret
+    }
+    
+    public func getAllSongs(in source: MediaSource) -> [MediaItem] {
+        var ret: [MediaItem] = []
+        let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
+        req.predicate = NSPredicate(format: "(mediaType == %llu)", source.rawValue)
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
+            ret = result.finalResult ?? []
+            #if DEBUG
+            print("-----Scanned \(ret.count) songs in source typed \(source.rawValue) -----")
             #endif
         } catch let e {
             print(e)

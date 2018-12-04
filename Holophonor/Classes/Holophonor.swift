@@ -29,12 +29,14 @@ open class Holophonor: NSObject {
             authorized = true
         }
         
-        let url = Bundle(for: Holophonor.self).url(forResource: "Holophonor", withExtension: "momd")
+        let bundleURL = Bundle(for: Holophonor.self).url(forResource: "Holophonor", withExtension: "bundle")
+        let frameworkBundle = Bundle(url: bundleURL!)
+        let url = frameworkBundle?.url(forResource: "Holophonor", withExtension: "momd")
         var storeUrl: String
         #if DEBUG
             storeUrl = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first as String!
         #else
-            storeUrl = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first as String!
+            storeUrl = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first as! String!
         #endif
         storeUrl = storeUrl.appending("/" + dbName)
         let mom = NSManagedObjectModel(contentsOf: url!)
@@ -276,6 +278,7 @@ open class Holophonor: NSObject {
             } catch {
                 continue
             }
+            // TODO: handle directories here.
             for file in files {
                 if file.hasSuffix("m4a") || file.hasSuffix("mp3") || file.hasSuffix("wav") {
                     addItemFromFile(path: dir + "/" + file)

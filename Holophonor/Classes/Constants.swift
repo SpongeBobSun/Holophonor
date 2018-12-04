@@ -6,7 +6,7 @@
 //
 //
 
-import UIKit
+import Foundation
 
 public enum MediaSource: Int64 {
     case iTunes = 1
@@ -22,5 +22,4 @@ public enum CollectionType: Int64 {
 
 class Constants: NSObject {
     public static let udKeyLastUpdated              = "udKeyLastUpdated"
-    
 }
