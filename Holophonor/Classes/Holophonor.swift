@@ -278,10 +278,17 @@ open class Holophonor: NSObject {
             } catch {
                 continue
             }
-            // TODO: handle directories here.
-            for file in files {
-                if file.hasSuffix("m4a") || file.hasSuffix("mp3") || file.hasSuffix("wav") {
-                    addItemFromFile(path: dir + "/" + file)
+            for var path in files {
+                path = dir + "/" + path
+                print(path)
+                if _isFolder(path: path) {
+                    print("folder")
+                    _handleFolder(path: path)
+                } else {
+                    print("not folder")
+                    if path.hasSuffix("m4a") || path.hasSuffix("mp3") || path.hasSuffix("wav") {
+                        addItemFromFile(path: path)
+                    }
                 }
             }
         }
@@ -291,6 +298,31 @@ open class Holophonor: NSObject {
         } catch let e {
             print("----Can not save----")
             print(e)
+        }
+    }
+    
+    fileprivate func _isFolder(path: String) -> Bool {
+        var ret: ObjCBool = false
+        FileManager.default.fileExists(atPath: path, isDirectory: &ret)
+        return ret.boolValue
+    }
+    
+    fileprivate func _handleFolder(path: String) {
+        var files: [String] = []
+        do {
+            try files = FileManager.default.contentsOfDirectory(atPath: path)
+        } catch let e {
+            print(e)
+        }
+        for var subPath in files {
+            subPath = path + "/" + subPath
+            if _isFolder(path: subPath) {
+                _handleFolder(path: subPath)
+            } else {
+                if subPath.hasSuffix("m4a") || subPath.hasSuffix("mp3") || subPath.hasSuffix("wav") {
+                    addItemFromFile(path: subPath)
+                }
+            }
         }
     }
     

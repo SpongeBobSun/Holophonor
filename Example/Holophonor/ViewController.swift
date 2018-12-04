@@ -16,9 +16,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         self.holo = Holophonor.instance
         let _ = holo.addLocalDirectory(dir: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
-        holo.rescan {
-
-        }
         print("viewDidLoad")
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -30,7 +27,7 @@ class ViewController: UIViewController {
     
     
     @IBAction func didClickRescan(_ sender: Any) {
-        holo.rescan {
+        holo.rescan(true) {
             print("----RESCANNED----")
             //Debug code
             
