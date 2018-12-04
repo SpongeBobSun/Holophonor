@@ -34,9 +34,9 @@ open class Holophonor: NSObject {
         let url = frameworkBundle?.url(forResource: "Holophonor", withExtension: "momd")
         var storeUrl: String
         #if DEBUG
-            storeUrl = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first as String!
+            storeUrl = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
         #else
-            storeUrl = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first as! String!
+            storeUrl = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first!
         #endif
         storeUrl = storeUrl.appending("/" + dbName)
         let mom = NSManagedObjectModel(contentsOf: url!)
