@@ -21,7 +21,7 @@ extension MediaCollection {
     @NSManaged public var representativeID: String?
     @NSManaged public var representativeTitle: String?
     @NSManaged public var persistentID: String?
-    @NSManaged public var items: NSSet?
+    @NSManaged public var items: Set<MediaItem>?
     @NSManaged public var representativeItem: MediaItem?
 
 }

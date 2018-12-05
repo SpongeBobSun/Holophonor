@@ -11,6 +11,7 @@ open class Holophonor: NSObject {
     var context: NSManagedObjectContext
     var coordinator: NSPersistentStoreCoordinator
     var holophonorQueue: DispatchQueue
+    var holderConfig: HoloHolderConfig
     
     public static let instance : Holophonor = {
         let ret = Holophonor()
@@ -18,10 +19,10 @@ open class Holophonor: NSObject {
     }()
     
     convenience override init() {
-        self.init(dbName: "Holophonor.sqlite")
+        self.init(dbName: "Holophonor.sqlite", holderConfig:nil)
     }
     
-    public init(dbName: String) {
+    public init(dbName: String, holderConfig: HoloHolderConfig?) {
         if #available(iOS 9.3, *) {
             authorized = MPMediaLibrary.authorizationStatus() == .authorized ||
                 MPMediaLibrary.authorizationStatus() == .restricted
@@ -51,6 +52,7 @@ open class Holophonor: NSObject {
         context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.persistentStoreCoordinator = coordinator
         holophonorQueue = DispatchQueue(label: "holophonor_queue" )
+        self.holderConfig = holderConfig ?? HoloHolderConfig()
         super.init()
     }
     
@@ -97,7 +99,7 @@ open class Holophonor: NSObject {
             self.context.performAndWait {
                 insert = MediaItem(entity: entity!, insertInto: context)
                 insert?.title = song.title
-                insert?.albumTitle = song.albumTitle
+                insert?.albumTitle = song.albumTitle?.count == 0 ? "Unknown Album" : song.albumTitle
                 insert?.artist = song.artist ?? "Unknown Artist"
                 insert?.genre = song.genre ?? "Unknown Genre"
                 insert?.fileURL = song.assetURL?.absoluteString
@@ -126,8 +128,8 @@ open class Holophonor: NSObject {
         //Album
         let albumReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
         albumReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (representativeItem.artist == %@) AND (collectionType == %llu)",
-                                         item.albumTitle ?? "",
-                                         item.artist ?? "",
+                                         item.albumTitle ?? "Unkown Album",
+                                         item.artist ?? "Unkown Artist",
                                          CollectionType.Album.rawValue)
         albumReq.includesPendingChanges = true;
         var album: MediaCollection? = nil
@@ -143,7 +145,7 @@ open class Holophonor: NSObject {
                 self.context.performAndWait {
                     let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
                     repItem.albumPersistentID = "\(item.albumPersistentID.littleEndian)"
-                    repItem.albumTitle = item.albumTitle
+                    repItem.albumTitle = item.albumTitle?.count == 0 ? "Unkown Album" : item.albumTitle
                     repItem.title = ""
                     repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
                     repItem.artist = item.artist
@@ -156,7 +158,7 @@ open class Holophonor: NSObject {
                     toAdd.persistentID = UUID().uuidString
                     toAdd.mpPersistenceID = "\(item.albumPersistentID.littleEndian)"
                     toAdd.representativeItem = repItem
-                    toAdd.representativeTitle = item.albumTitle
+                    toAdd.representativeTitle = item.albumTitle?.count == 0 ? "Unkown Album" : item.albumTitle
                     toAdd.addToItems(wrapped)
                     toAdd.collectionType = CollectionType.Album.rawValue
                     album = toAdd

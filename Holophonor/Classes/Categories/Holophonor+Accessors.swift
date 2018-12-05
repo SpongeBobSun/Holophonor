@@ -137,6 +137,62 @@ extension Holophonor {
         return ret
     }
     
+    public func getSongBy(name: String) -> MediaItem? {
+        var ret: MediaItem? = nil
+        let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
+        let filter = NSPredicate(format: "title == %@", name)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
+            ret = result.finalResult?.first
+        } catch  {
+            
+        }
+        return ret
+    }
+    
+    public func getSongsBy(artist: String) -> [MediaItem] {
+        var ret: [MediaItem] = []
+        let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
+        let filter = NSPredicate(format: "artist == %@", artist)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
+            ret = result.finalResult ?? []
+        } catch  {
+            
+        }
+        return ret
+    }
+    
+    public func getSongsBy(genre: String) -> [MediaItem] {
+        var ret: [MediaItem] = []
+        let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
+        let filter = NSPredicate(format: "genre == %@", genre)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
+            ret = result.finalResult ?? []
+        } catch  {
+            
+        }
+        return ret
+    }
+    
+    public func searchSongBy(name: String) -> [MediaItem] {
+        var ret: [MediaItem] = []
+        let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
+        let filter = NSPredicate(format: "artist CONTAINS[cd] %@", name)
+        req.predicate = filter
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
+            ret = result.finalResult ?? []
+        } catch  {
+            
+        }
+        return ret
+    }
+    
     public func getAlbumBy(identifier: String) -> MediaCollection? {
         var ret: MediaCollection? = nil
         let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
@@ -184,6 +240,22 @@ extension Holophonor {
         }
         return ret;
     }
+    
+    public func getArtistBy(name: String) -> MediaCollection? {
+        var ret: MediaCollection?
+        let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.artist == %@)",
+                                    CollectionType.Artist.rawValue,
+                                    name)
+        do {
+            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection>
+            ret = result.finalResult?.first ?? nil
+        } catch {
+            print(error)
+        }
+        return ret;
+    }
+    
     public func getAlbumsBy(genre: String) -> [MediaCollection] {
         var ret: [MediaCollection] = []
         let req = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")

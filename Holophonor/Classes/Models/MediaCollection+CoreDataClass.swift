@@ -19,8 +19,8 @@ public class MediaCollection: NSManagedObject {
             return _collectionArtwork;
         }
         if self.items?.count ?? 0 > 0 {
-            let anyItem = self.items?.anyObject() as! MediaItem
-            _collectionArtwork = anyItem.getArtworkWithSize(size: size)
+            let anyItem = self.items?.first 
+            _collectionArtwork = anyItem?.getArtworkWithSize(size: size)
             return _collectionArtwork
         }
         
