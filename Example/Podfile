@@ -2,7 +2,7 @@ use_frameworks!
 
 target 'Holophonor_Example' do
   pod 'Holophonor', :path => '../'
-
+  pod 'SnapKit', '~> 4.0.0'
   target 'Holophonor_Tests' do
     inherit! :search_paths
 

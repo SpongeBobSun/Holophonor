@@ -1,8 +1,14 @@
 PODS:
   - Holophonor (0.1.0)
+  - SnapKit (4.0.1)
 
 DEPENDENCIES:
   - Holophonor (from `../`)
+  - SnapKit (~> 4.0.0)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - SnapKit
 
 EXTERNAL SOURCES:
   Holophonor:
@@ -10,7 +16,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Holophonor: 1c74624d54261bc1a742194bf771208a6aa1cdc4
+  SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
 
-PODFILE CHECKSUM: 0124f4943a5a73f2a8c80543fab80730f89b4b7e
+PODFILE CHECKSUM: 1e1a774fecd21e5f086fbff524f3a130a38fb6ef
 
 COCOAPODS: 1.5.3
