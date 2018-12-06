@@ -182,7 +182,7 @@ extension Holophonor {
     public func searchSongBy(name: String) -> [MediaItem] {
         var ret: [MediaItem] = []
         let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
-        let filter = NSPredicate(format: "(artist CONTAINS[cd] %@) AND (mediaType != %llu)", name, MediaSource.Representative.rawValue)
+        let filter = NSPredicate(format: "(title CONTAINS[cd] %@) AND (mediaType != %llu)", name, MediaSource.Representative.rawValue)
         req.predicate = filter
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>

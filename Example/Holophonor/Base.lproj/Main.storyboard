@@ -22,7 +22,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iLP-nc-lIB">
-                                <rect key="frame" x="16" y="213" width="343" height="30"/>
+                                <rect key="frame" x="16" y="243" width="343" height="30"/>
                                 <color key="backgroundColor" red="1" green="0.40000000000000002" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Rescan">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -76,8 +76,23 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0P2-Ag-OdI">
-                                <rect key="frame" x="16" y="167" width="105.5" height="30"/>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vn0-ob-2oj">
+                                <rect key="frame" x="86" y="159" width="273" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="onTitleEditChange:" destination="vXZ-lx-hvc" eventType="editingChanged" id="uzi-D8-u4Z"/>
+                                </connections>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GZA-cj-uuk">
+                                <rect key="frame" x="16" y="159" width="54" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" horizontalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0P2-Ag-OdI">
+                                <rect key="frame" x="8" y="197" width="76" height="30"/>
                                 <color key="backgroundColor" red="0.29019607843137252" green="0.56470588235294117" blue="0.88627450980392153" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Query Artist">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -86,22 +101,22 @@
                                     <action selector="didClickQueryArtist:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="muL-s5-aqw"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eLh-bc-u1d">
-                                <rect key="frame" x="253.5" y="167" width="105.5" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cxJ-hl-FI7">
+                                <rect key="frame" x="279" y="197" width="88" height="30"/>
                                 <color key="backgroundColor" red="0.2901960784" green="0.56470588239999997" blue="0.8862745098" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="Query Song">
+                                <state key="normal" title="Search Song">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <action selector="didClickQuerySong:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="0nt-1g-JK4"/>
+                                    <action selector="didClickSearchSong:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="zCP-de-i5t"/>
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6ED-eO-Tik">
-                                <rect key="frame" x="16" y="323" width="343" height="328"/>
+                                <rect key="frame" x="16" y="353" width="343" height="298"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tki-3y-Ffl">
-                                <rect key="frame" x="16" y="259" width="343" height="48"/>
+                                <rect key="frame" x="16" y="289" width="343" height="48"/>
                                 <color key="backgroundColor" red="0.90588235294117647" green="0.95294117647058818" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="Lsy-0s-NTU"/>
@@ -111,11 +126,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y4u-14-3bY">
-                                <rect key="frame" x="137.5" y="167" width="100" height="30"/>
+                                <rect key="frame" x="92" y="197" width="90" height="30"/>
                                 <color key="backgroundColor" red="0.2901960784" green="0.56470588239999997" blue="0.8862745098" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="Tax-Ar-K0e"/>
-                                </constraints>
                                 <state key="normal" title="Query Album">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
@@ -123,40 +135,60 @@
                                     <action selector="didClickQueryAlbum:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="kqd-Sl-Y9E"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eLh-bc-u1d">
+                                <rect key="frame" x="190" y="197" width="81" height="30"/>
+                                <color key="backgroundColor" red="0.2901960784" green="0.56470588239999997" blue="0.8862745098" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Query Song">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="didClickQuerySong:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="0nt-1g-JK4"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="cxJ-hl-FI7" secondAttribute="trailing" constant="8" id="0Ln-Uw-U89"/>
                             <constraint firstItem="pck-4e-Vp0" firstAttribute="top" secondItem="ddD-fd-IPm" secondAttribute="top" id="1U6-yG-9af"/>
                             <constraint firstItem="Tki-3y-Ffl" firstAttribute="top" secondItem="iLP-nc-lIB" secondAttribute="bottom" constant="16" id="2XS-nR-tpg"/>
                             <constraint firstItem="eLh-bc-u1d" firstAttribute="top" secondItem="0P2-Ag-OdI" secondAttribute="top" id="2mF-Ud-zgl"/>
+                            <constraint firstItem="GZA-cj-uuk" firstAttribute="trailing" secondItem="fJ4-8F-Q8K" secondAttribute="trailing" id="42i-3n-eSY"/>
                             <constraint firstItem="pck-4e-Vp0" firstAttribute="leading" secondItem="ddD-fd-IPm" secondAttribute="trailing" constant="16" id="494-7a-KeE"/>
                             <constraint firstItem="fJ4-8F-Q8K" firstAttribute="trailing" secondItem="ddD-fd-IPm" secondAttribute="trailing" id="5NU-ws-2pC"/>
                             <constraint firstItem="22I-z9-M8C" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="16" id="8wi-Jp-nhl"/>
                             <constraint firstAttribute="trailing" secondItem="nv7-z4-mzY" secondAttribute="trailing" constant="16" id="8xs-Mv-woH"/>
-                            <constraint firstItem="Y4u-14-3bY" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="96i-pl-6hg"/>
+                            <constraint firstItem="Y4u-14-3bY" firstAttribute="top" secondItem="0P2-Ag-OdI" secondAttribute="top" id="9MK-fE-WYR"/>
                             <constraint firstItem="fJ4-8F-Q8K" firstAttribute="leading" secondItem="ddD-fd-IPm" secondAttribute="leading" id="CEJ-ba-tt1"/>
                             <constraint firstItem="pck-4e-Vp0" firstAttribute="trailing" secondItem="nv7-z4-mzY" secondAttribute="trailing" id="DHy-un-1zB"/>
                             <constraint firstItem="ddD-fd-IPm" firstAttribute="top" secondItem="22I-z9-M8C" secondAttribute="bottom" constant="8" id="DeX-0G-PD3"/>
                             <constraint firstItem="eyi-5L-5Oe" firstAttribute="trailing" secondItem="pck-4e-Vp0" secondAttribute="trailing" id="H7O-ZF-uXe"/>
                             <constraint firstItem="eLh-bc-u1d" firstAttribute="bottom" secondItem="0P2-Ag-OdI" secondAttribute="bottom" id="Ii5-kY-7Gf"/>
-                            <constraint firstItem="Y4u-14-3bY" firstAttribute="centerY" secondItem="0P2-Ag-OdI" secondAttribute="centerY" id="Ip4-Tz-AHG"/>
                             <constraint firstItem="eyi-5L-5Oe" firstAttribute="leading" secondItem="fJ4-8F-Q8K" secondAttribute="trailing" constant="16" id="Iy5-Nv-5D1"/>
                             <constraint firstItem="6ED-eO-Tik" firstAttribute="top" secondItem="Tki-3y-Ffl" secondAttribute="bottom" constant="16" id="L8o-Sy-ceN"/>
-                            <constraint firstItem="0P2-Ag-OdI" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="16" id="LJl-4V-Gkl"/>
+                            <constraint firstItem="0P2-Ag-OdI" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="8" id="LJl-4V-Gkl"/>
                             <constraint firstItem="iLP-nc-lIB" firstAttribute="top" secondItem="0P2-Ag-OdI" secondAttribute="bottom" constant="16" id="Las-Ch-j5F"/>
                             <constraint firstItem="ddD-fd-IPm" firstAttribute="trailing" secondItem="22I-z9-M8C" secondAttribute="trailing" id="LfD-H1-KED"/>
+                            <constraint firstItem="cxJ-hl-FI7" firstAttribute="leading" secondItem="eLh-bc-u1d" secondAttribute="trailing" constant="8" id="MOz-rI-moq"/>
                             <constraint firstItem="nv7-z4-mzY" firstAttribute="bottom" secondItem="22I-z9-M8C" secondAttribute="bottom" id="OOm-4d-qk1"/>
-                            <constraint firstItem="eLh-bc-u1d" firstAttribute="leading" secondItem="Y4u-14-3bY" secondAttribute="trailing" constant="16" id="RGV-qK-1t4"/>
+                            <constraint firstItem="vn0-ob-2oj" firstAttribute="leading" secondItem="GZA-cj-uuk" secondAttribute="trailing" constant="16" id="Okj-a5-87h"/>
+                            <constraint firstItem="0P2-Ag-OdI" firstAttribute="top" secondItem="GZA-cj-uuk" secondAttribute="bottom" constant="8" id="P0U-tU-YWs"/>
+                            <constraint firstItem="cxJ-hl-FI7" firstAttribute="bottom" secondItem="eLh-bc-u1d" secondAttribute="bottom" id="Py0-PY-MsE"/>
+                            <constraint firstItem="eLh-bc-u1d" firstAttribute="leading" secondItem="Y4u-14-3bY" secondAttribute="trailing" constant="8" id="RGV-qK-1t4"/>
                             <constraint firstItem="fJ4-8F-Q8K" firstAttribute="top" secondItem="ddD-fd-IPm" secondAttribute="bottom" constant="8" id="Szq-bn-uLi"/>
+                            <constraint firstItem="GZA-cj-uuk" firstAttribute="top" secondItem="fJ4-8F-Q8K" secondAttribute="bottom" constant="8" id="TEf-ww-Im6"/>
+                            <constraint firstItem="Y4u-14-3bY" firstAttribute="bottom" secondItem="0P2-Ag-OdI" secondAttribute="bottom" id="Xkd-H7-ELd"/>
+                            <constraint firstItem="GZA-cj-uuk" firstAttribute="leading" secondItem="fJ4-8F-Q8K" secondAttribute="leading" id="YP4-0r-ff5"/>
+                            <constraint firstItem="vn0-ob-2oj" firstAttribute="bottom" secondItem="GZA-cj-uuk" secondAttribute="bottom" id="bfM-Ao-dgl"/>
                             <constraint firstItem="nv7-z4-mzY" firstAttribute="top" secondItem="22I-z9-M8C" secondAttribute="top" id="cnS-EK-bt4"/>
                             <constraint firstItem="22I-z9-M8C" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="25" id="cnd-OI-wYK"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="6ED-eO-Tik" secondAttribute="bottom" constant="16" id="eqR-4g-aYP"/>
-                            <constraint firstItem="Y4u-14-3bY" firstAttribute="leading" secondItem="0P2-Ag-OdI" secondAttribute="trailing" constant="16" id="gF4-lL-PpJ"/>
-                            <constraint firstItem="0P2-Ag-OdI" firstAttribute="top" secondItem="eyi-5L-5Oe" secondAttribute="bottom" constant="16" id="gv8-4q-Z2n"/>
+                            <constraint firstItem="Y4u-14-3bY" firstAttribute="leading" secondItem="0P2-Ag-OdI" secondAttribute="trailing" constant="8" id="gF4-lL-PpJ"/>
+                            <constraint firstItem="vn0-ob-2oj" firstAttribute="top" secondItem="GZA-cj-uuk" secondAttribute="top" id="gfv-Do-agm"/>
+                            <constraint firstItem="vn0-ob-2oj" firstAttribute="trailing" secondItem="eyi-5L-5Oe" secondAttribute="trailing" id="h88-my-y1H"/>
                             <constraint firstItem="ddD-fd-IPm" firstAttribute="leading" secondItem="22I-z9-M8C" secondAttribute="leading" id="iLr-bP-nkb"/>
                             <constraint firstItem="eyi-5L-5Oe" firstAttribute="bottom" secondItem="fJ4-8F-Q8K" secondAttribute="bottom" id="joz-fy-ktr"/>
                             <constraint firstItem="Tki-3y-Ffl" firstAttribute="leading" secondItem="iLP-nc-lIB" secondAttribute="leading" id="kXP-gL-uNs"/>
-                            <constraint firstAttribute="trailing" secondItem="eLh-bc-u1d" secondAttribute="trailing" constant="16" id="lvo-dq-MgE"/>
+                            <constraint firstItem="cxJ-hl-FI7" firstAttribute="top" secondItem="eLh-bc-u1d" secondAttribute="top" id="nzl-Yl-Roz"/>
                             <constraint firstItem="pck-4e-Vp0" firstAttribute="bottom" secondItem="ddD-fd-IPm" secondAttribute="bottom" id="odp-Ct-Fdj"/>
                             <constraint firstAttribute="trailing" secondItem="iLP-nc-lIB" secondAttribute="trailing" constant="16" id="st0-KK-HIe"/>
                             <constraint firstItem="eyi-5L-5Oe" firstAttribute="top" secondItem="fJ4-8F-Q8K" secondAttribute="top" id="tBU-5p-XAj"/>
@@ -172,6 +204,7 @@
                         <outlet property="inputAlbum" destination="pck-4e-Vp0" id="IIT-Af-mbw"/>
                         <outlet property="inputArtist" destination="nv7-z4-mzY" id="NiD-tW-Chu"/>
                         <outlet property="inputGenre" destination="eyi-5L-5Oe" id="0x1-mP-lmY"/>
+                        <outlet property="inputTitle" destination="vn0-ob-2oj" id="ClZ-uE-euK"/>
                         <outlet property="tableView" destination="6ED-eO-Tik" id="3SE-UY-vwG"/>
                     </connections>
                 </viewController>

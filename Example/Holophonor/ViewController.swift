@@ -29,6 +29,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var inputGenre: UITextField!
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var inputTitle: UITextField!
     
     
     
@@ -67,9 +68,16 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         inputArtist.isUserInteractionEnabled = true
         inputAlbum.isUserInteractionEnabled = true
         inputGenre.isUserInteractionEnabled = true
+        inputTitle.isUserInteractionEnabled = true
+        inputTitle.backgroundColor = UIColor.clear
         inputArtist.backgroundColor = UIColor.clear
         inputAlbum.backgroundColor = UIColor.clear
         inputGenre.backgroundColor = UIColor.clear
+    }
+    
+    private func popAlert(title: String) {
+        let alert = UIAlertView.init(title: title, message: nil, delegate: nil, cancelButtonTitle: "Confirm")
+        alert.show()
     }
     
     @IBAction func onArtistEditChange(_ sender: Any) {
@@ -77,9 +85,25 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             inputArtist.isUserInteractionEnabled = true
             inputAlbum.isUserInteractionEnabled = false
             inputGenre.isUserInteractionEnabled = false
+            inputTitle.isUserInteractionEnabled = false
+            inputTitle.backgroundColor = UIColor.gray
             inputArtist.backgroundColor = UIColor.clear
             inputAlbum.backgroundColor = UIColor.gray
             inputGenre.backgroundColor = UIColor.gray
+        } else {
+            resetInputs()
+        }
+    }
+    @IBAction func onTitleEditChange(_ sender: Any) {
+        if inputTitle.text != nil && inputTitle.text!.count > 0 {
+            inputArtist.isUserInteractionEnabled = false
+            inputAlbum.isUserInteractionEnabled = false
+            inputGenre.isUserInteractionEnabled = false
+            inputTitle.isUserInteractionEnabled = true
+            inputArtist.backgroundColor = UIColor.gray
+            inputAlbum.backgroundColor = UIColor.gray
+            inputGenre.backgroundColor = UIColor.gray
+            inputTitle.backgroundColor = UIColor.clear
         } else {
             resetInputs()
         }
@@ -90,6 +114,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             inputArtist.isUserInteractionEnabled = false
             inputAlbum.isUserInteractionEnabled = true
             inputGenre.isUserInteractionEnabled = false
+            inputTitle.isUserInteractionEnabled = false
+            inputTitle.backgroundColor = UIColor.gray
             inputArtist.backgroundColor = UIColor.gray
             inputAlbum.backgroundColor = UIColor.clear
             inputGenre.backgroundColor = UIColor.gray
@@ -102,6 +128,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             inputArtist.isUserInteractionEnabled = false
             inputAlbum.isUserInteractionEnabled = false
             inputGenre.isUserInteractionEnabled = true
+            inputTitle.isUserInteractionEnabled = false
+            inputTitle.backgroundColor = UIColor.gray
             inputArtist.backgroundColor = UIColor.gray
             inputAlbum.backgroundColor = UIColor.gray
             inputGenre.backgroundColor = UIColor.clear
@@ -125,13 +153,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 items = [collection?.representativeItem] as! [MediaItem]
             }
             tableView.reloadData()
-        } else {
+        } else if inputGenre.isUserInteractionEnabled {
             let collections = holo.getAlbumsBy(genre: inputArtist.text ?? "")
             items = []
             for collection in collections {
                 items.append(collection.representativeItem!)
             }
             tableView.reloadData()
+        } else {
+            popAlert(title: "Search Songs only applied to title")
         }
         self.view.endEditing(true)
         resetInputs()
@@ -148,23 +178,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }
             tableView.reloadData()
         } else if inputAlbum.isUserInteractionEnabled {
-            let alert = UIAlertView.init(title: "Unsupport query dimension", message: nil, delegate: nil, cancelButtonTitle: "Confirm")
-            alert.show()
-        } else {
+            popAlert(title: "Unsupport query dimension")
+        } else if inputGenre.isUserInteractionEnabled {
             let collections = holo.getArtistsBy(genre: inputArtist.text ?? "")
             items = []
             for collection in collections {
                 items.append(collection.representativeItem!)
             }
             tableView.reloadData()
+        } else {
+            popAlert(title: "Search Songs only applied to title")
         }
         self.view.endEditing(true)
-        inputArtist.isUserInteractionEnabled = true
-        inputAlbum.isUserInteractionEnabled = true
-        inputGenre.isUserInteractionEnabled = true
-        inputArtist.backgroundColor = UIColor.clear
-        inputAlbum.backgroundColor = UIColor.clear
-        inputGenre.backgroundColor = UIColor.clear
+        resetInputs()
     }
     
     
@@ -184,23 +210,30 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 items.append(song)
             }
             tableView.reloadData()
-        } else {
+        } else if inputGenre.isUserInteractionEnabled {
             let songs = holo.getSongsBy(genre: inputGenre.text ?? "")
             items = []
             for song in songs {
                 items.append(song)
             }
             tableView.reloadData()
+        } else {
+            popAlert(title: "Search Songs only applied to title")
         }
         self.view.endEditing(true)
-        inputArtist.isUserInteractionEnabled = true
-        inputAlbum.isUserInteractionEnabled = true
-        inputGenre.isUserInteractionEnabled = true
-        inputArtist.backgroundColor = UIColor.clear
-        inputAlbum.backgroundColor = UIColor.clear
-        inputGenre.backgroundColor = UIColor.clear
+        resetInputs()
     }
     
+    @IBAction func didClickSearchSong(_ sender: Any) {
+        if inputTitle.isUserInteractionEnabled && inputTitle.text != nil {
+            items = holo.searchSongBy(name: inputTitle.text ?? "")
+            tableView.reloadData()
+        } else {
+            popAlert(title: "Search Songs only applied to title")
+        }
+        self.view.endEditing(true)
+        resetInputs()
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
