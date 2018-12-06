@@ -140,7 +140,7 @@ extension Holophonor {
     public func getSongBy(name: String) -> MediaItem? {
         var ret: MediaItem? = nil
         let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
-        let filter = NSPredicate(format: "title == %@", name)
+        let filter = NSPredicate(format: "(title == %@) AND (mediaType != %llu)", name, MediaSource.Representative.rawValue)
         req.predicate = filter
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
@@ -154,7 +154,7 @@ extension Holophonor {
     public func getSongsBy(artist: String) -> [MediaItem] {
         var ret: [MediaItem] = []
         let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
-        let filter = NSPredicate(format: "artist == %@", artist)
+        let filter = NSPredicate(format: "(artist == %@) AND (mediaType != %llu)", artist, MediaSource.Representative.rawValue)
         req.predicate = filter
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
@@ -168,7 +168,7 @@ extension Holophonor {
     public func getSongsBy(genre: String) -> [MediaItem] {
         var ret: [MediaItem] = []
         let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
-        let filter = NSPredicate(format: "genre == %@", genre)
+        let filter = NSPredicate(format: "(genre == %@) AND (mediaType != %llu)", genre, MediaSource.Representative.rawValue)
         req.predicate = filter
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>
@@ -182,7 +182,7 @@ extension Holophonor {
     public func searchSongBy(name: String) -> [MediaItem] {
         var ret: [MediaItem] = []
         let req = NSFetchRequest<MediaItem>(entityName: "MediaItem")
-        let filter = NSPredicate(format: "artist CONTAINS[cd] %@", name)
+        let filter = NSPredicate(format: "(artist CONTAINS[cd] %@) AND (mediaType != %llu)", name, MediaSource.Representative.rawValue)
         req.predicate = filter
         do {
             let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem>

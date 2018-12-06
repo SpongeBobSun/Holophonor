@@ -2,7 +2,7 @@
 //  MediaItem+CoreDataProperties.swift
 //  
 //
-//  Created by bob.sun on 01/06/2017.
+//  Created by Bob on 2018/12/6.
 //
 //
 
@@ -25,7 +25,7 @@ extension MediaItem {
     @NSManaged public var genrePersistentID: String?
     @NSManaged public var mediaType: Int64
     @NSManaged public var mpPersistentID: String?
-    @NSManaged public var title: String?
     @NSManaged public var persistentID: String?
+    @NSManaged public var title: String?
 
 }
