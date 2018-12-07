@@ -206,7 +206,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         } else if inputAlbum.isUserInteractionEnabled {
             let collection = holo.getAlbumBy(name: inputAlbum.text ?? "")
             items = []
-            for song in collection?.items ?? Set<MediaItem>() {
+            for song in collection?.items ?? [] {
                 items.append(song)
             }
             tableView.reloadData()
