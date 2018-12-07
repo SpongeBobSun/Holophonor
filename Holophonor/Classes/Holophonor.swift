@@ -94,10 +94,10 @@ open class Holophonor: NSObject {
         }
         for song in songs {
             
-            let entity = NSEntityDescription.entity(forEntityName: "MediaItem", in: context)
-            var insert: MediaItem? = nil
+            let entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: context)
+            var insert: MediaItem_? = nil
             self.context.performAndWait {
-                insert = MediaItem(entity: entity!, insertInto: context)
+                insert = MediaItem_(entity: entity!, insertInto: context)
                 insert?.title = song.title
                 insert?.albumTitle = song.albumTitle?.count == 0 ? "Unknown Album" : song.albumTitle
                 insert?.artist = song.artist ?? "Unknown Artist"
@@ -124,26 +124,26 @@ open class Holophonor: NSObject {
         return
     }
     
-    fileprivate func addCollectionFromiTunesSong(item: MPMediaItem, wrapped: MediaItem) {
+    fileprivate func addCollectionFromiTunesSong(item: MPMediaItem, wrapped: MediaItem_) {
         //Album
-        let albumReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let albumReq = NSFetchRequest<MediaCollection_>(entityName: "MediaCollection_")
         albumReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (representativeItem.artist == %@) AND (collectionType == %llu)",
                                          item.albumTitle ?? "Unkown Album",
                                          item.artist ?? "Unkown Artist",
                                          CollectionType.Album.rawValue)
         albumReq.includesPendingChanges = true;
-        var album: MediaCollection? = nil
-        var artist: MediaCollection? = nil
-        var genre: MediaCollection? = nil
+        var album: MediaCollection_? = nil
+        var artist: MediaCollection_? = nil
+        var genre: MediaCollection_? = nil
         do {
-            var result: [MediaCollection] = []
+            var result: [MediaCollection_] = []
             result = try self.context.fetch(albumReq)
             if result.count == 0 {
                 //ADD
-                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
-                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
+                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
                 self.context.performAndWait {
-                    let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                    let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
                     repItem.albumPersistentID = "\(item.albumPersistentID.littleEndian)"
                     repItem.albumTitle = item.albumTitle?.count == 0 ? "Unkown Album" : item.albumTitle
                     repItem.title = ""
@@ -154,7 +154,7 @@ open class Holophonor: NSObject {
                     repItem.mediaType = MediaSource.Representative.rawValue
                     repItem.persistentID = UUID().uuidString
                     
-                    let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                    let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
                     toAdd.persistentID = UUID().uuidString
                     toAdd.mpPersistenceID = "\(item.albumPersistentID.littleEndian)"
                     toAdd.representativeItem = repItem
@@ -180,23 +180,23 @@ open class Holophonor: NSObject {
         }
         
         //Artist
-        let artistReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let artistReq = NSFetchRequest<MediaCollection_>(entityName: "MediaCollection_")
         artistReq.includesPendingChanges = true;
         artistReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (collectionType == %llu)", item.artist ?? "Unknown Artist", CollectionType.Artist.rawValue)
         do {
-            var result: [MediaCollection] = []
+            var result: [MediaCollection_] = []
             result = try self.context.fetch(artistReq)
             if result.count == 0 {
-                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
-                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
+                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
                 self.context.performAndWait {
-                    let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                    let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
                     repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
                     repItem.artist = item.artist
                     repItem.mediaType = MediaSource.Representative.rawValue
                     repItem.persistentID = UUID().uuidString
                     
-                    let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                    let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
                     toAdd.mpPersistenceID = "\(item.artistPersistentID.littleEndian)"
                     toAdd.representativeItem = repItem
                     toAdd.representativeTitle = item.artist
@@ -224,23 +224,23 @@ open class Holophonor: NSObject {
         }
         
         //Genre
-        let genreReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let genreReq = NSFetchRequest<MediaCollection_>(entityName: "MediaCollection_")
         genreReq.includesPendingChanges = true;
         genreReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (collectionType == %llu)", item.genre ?? "Unkown Genre", CollectionType.Genre.rawValue)
         do {
-            var result: [MediaCollection] = []
+            var result: [MediaCollection_] = []
             result = try self.context.fetch(genreReq)
             if result.count == 0 {
-                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
-                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
+                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
                 
-                let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
                 repItem.genrePersistentID = "\(item.genrePersistentID.littleEndian)"
                 repItem.genre = item.genre
                 repItem.mediaType = MediaSource.Representative.rawValue
                 repItem.persistentID = UUID().uuidString
                 
-                let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
                 toAdd.mpPersistenceID = "\(item.genrePersistentID.littleEndian)"
                 toAdd.representativeItem = repItem
                 toAdd.representativeTitle = item.genre
@@ -330,8 +330,8 @@ open class Holophonor: NSObject {
     
     fileprivate func addItemFromFile(path: String) {
         let asset: AVAsset = AVAsset(url: URL(fileURLWithPath: path))
-        let entity = NSEntityDescription.entity(forEntityName: "MediaItem", in: context)
-        let insert = MediaItem(entity: entity!, insertInto: context)
+        let entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: context)
+        let insert = MediaItem_(entity: entity!, insertInto: context)
         insert.mediaType = MediaSource.Local.rawValue
         insert.fileURL = URL(fileURLWithPath: path).absoluteString
         
@@ -365,33 +365,33 @@ open class Holophonor: NSObject {
         addCollectionFromLocalSong(item: insert)
     }
     
-    fileprivate func addCollectionFromLocalSong(item: MediaItem) {
+    fileprivate func addCollectionFromLocalSong(item: MediaItem_) {
         //Album
-        let albumReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let albumReq = NSFetchRequest<MediaCollection_>(entityName: "MediaCollection_")
         albumReq.includesPendingChanges = true;
         albumReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (representativeItem.artist == %@) AND (collectionType == %llu)",
                                          item.albumTitle ?? "",
                                          item.artist ?? "",
                                          CollectionType.Album.rawValue)
-        var album: MediaCollection? = nil
-        var artist: MediaCollection? = nil
-        var genre: MediaCollection? = nil
+        var album: MediaCollection_? = nil
+        var artist: MediaCollection_? = nil
+        var genre: MediaCollection_? = nil
         do {
-            var result: [MediaCollection] = []
+            var result: [MediaCollection_] = []
             result = try self.context.fetch(albumReq)
             if result.count == 0 {
                 //ADD
-                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
-                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
+                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
                 
-                let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
                 repItem.albumTitle = item.albumTitle
                 repItem.artist = item.artist
                 repItem.genre = item.genre
                 repItem.mediaType = MediaSource.Representative.rawValue
                 repItem.persistentID = UUID().uuidString
                 
-                let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
                 toAdd.representativeItem = repItem
                 toAdd.representativeTitle = item.albumTitle
                 toAdd.addToItems(item)
@@ -411,23 +411,23 @@ open class Holophonor: NSObject {
         }
         
         //Artist
-        let artistReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let artistReq = NSFetchRequest<MediaCollection_>(entityName: "MediaCollection_")
         artistReq.includesPendingChanges = true;
         artistReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (collectionType == %llu)", item.artist!, CollectionType.Artist.rawValue)
 
         do {
-            var result: [MediaCollection] = []
+            var result: [MediaCollection_] = []
             result = try self.context.fetch(artistReq)
             if result.count == 0 {
-                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
-                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
+                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
+                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
                 
-                let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
                 repItem.artist = item.artist
                 repItem.mediaType = MediaSource.Representative.rawValue
                 repItem.persistentID = UUID().uuidString
                 
-                let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
                 toAdd.representativeTitle = item.artist
                 toAdd.representativeItem = repItem
                 toAdd.representativeTitle = item.artist
@@ -447,22 +447,22 @@ open class Holophonor: NSObject {
         }
         
         //Genre
-        let genreReq = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let genreReq = NSFetchRequest<MediaCollection_>(entityName: "MediaCollection_")
         genreReq.includesPendingChanges = true;
         genreReq.predicate = NSPredicate(format: "(representativeTitle == %@) AND (collectionType == %llu)", item.genre ?? "Unkown Genre", CollectionType.Genre.rawValue)
         
         do {
-            var result: [MediaCollection] = []
+            var result: [MediaCollection_] = []
             result = try self.context.fetch(genreReq)
             if result.count == 0 {
-                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection", in: self.context)
-                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem", in: self.context)
-                let repItem = MediaItem(entity: entityItem!, insertInto: self.context)
+                let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
+                let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
+                let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
                 repItem.genre = item.genre
                 repItem.mediaType = MediaSource.Representative.rawValue
                 repItem.persistentID = UUID().uuidString
                 
-                let toAdd = MediaCollection(entity: entityCollection!, insertInto: self.context)
+                let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
                 toAdd.representativeTitle = item.genre
                 toAdd.representativeItem = repItem
                 toAdd.representativeTitle = item.genre
@@ -485,8 +485,8 @@ open class Holophonor: NSObject {
     }
     
     fileprivate func dropAll() {
-        let fetchItem = NSFetchRequest<MediaItem>(entityName: "MediaItem")
-        let fetchCollection = NSFetchRequest<MediaCollection>(entityName: "MediaCollection")
+        let fetchItem = NSFetchRequest<MediaItem_>(entityName: "MediaItem_")
+        let fetchCollection = NSFetchRequest<MediaCollection_>(entityName: "MediaCollection_")
         do {
             let items = try self.context.fetch(fetchItem)
             let collections = try self.context.fetch(fetchCollection)

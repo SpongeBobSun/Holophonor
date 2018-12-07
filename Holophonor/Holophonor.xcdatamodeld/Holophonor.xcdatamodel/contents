@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16E195" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="MediaCollection" representedClassName=".MediaCollection" syncable="YES">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14315.18" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="MediaCollection_" representedClassName=".MediaCollection_" syncable="YES">
         <attribute name="collectionType" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="mpPersistenceID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="persistentID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="representativeID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="representativeTitle" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MediaItem" syncable="YES"/>
-        <relationship name="representativeItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MediaItem" syncable="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MediaItem_" syncable="YES"/>
+        <relationship name="representativeItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MediaItem_" syncable="YES"/>
     </entity>
-    <entity name="MediaItem" representedClassName=".MediaItem" syncable="YES">
+    <entity name="MediaItem_" representedClassName=".MediaItem_" syncable="YES">
         <attribute name="albumPersistentID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="albumTitle" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="artist" optional="YES" attributeType="String" syncable="YES"/>
@@ -23,7 +23,7 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="MediaCollection" positionX="-54" positionY="-9" width="128" height="150"/>
-        <element name="MediaItem" positionX="-63" positionY="-18" width="128" height="210"/>
+        <element name="MediaCollection_" positionX="-54" positionY="-9" width="128" height="150"/>
+        <element name="MediaItem_" positionX="-63" positionY="-18" width="128" height="210"/>
     </elements>
 </model>

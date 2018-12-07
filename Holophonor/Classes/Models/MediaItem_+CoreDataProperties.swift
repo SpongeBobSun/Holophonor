@@ -1,8 +1,8 @@
 //
-//  MediaItem+CoreDataProperties.swift
+//  MediaItem_+CoreDataProperties.swift
 //  
 //
-//  Created by Bob on 2018/12/6.
+//  Created by Bob on 2018/12/7.
 //
 //
 
@@ -10,10 +10,10 @@ import Foundation
 import CoreData
 
 
-extension MediaItem {
+extension MediaItem_ {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<MediaItem> {
-        return NSFetchRequest<MediaItem>(entityName: "MediaItem")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<MediaItem_> {
+        return NSFetchRequest<MediaItem_>(entityName: "MediaItem_")
     }
 
     @NSManaged public var albumPersistentID: String?
