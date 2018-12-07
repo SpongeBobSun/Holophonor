@@ -47,7 +47,7 @@
 		8EAC02BA003D0BDAC3F92638 /* Pods-Holophonor_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Holophonor_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Holophonor_Tests/Pods-Holophonor_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B2FEDE279B2DC018C551A643 /* Pods_Holophonor_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Holophonor_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D53D84932FEE511080D61E14 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		E074E92BBBD04304BF9CCECB /* Holophonor.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Holophonor.podspec; path = ../Holophonor.podspec; sourceTree = "<group>"; };
+		E074E92BBBD04304BF9CCECB /* Holophonor.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Holophonor.podspec; path = ../Holophonor.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		EEC008F926DEC6ADBF15A33F /* Pods-Holophonor_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Holophonor_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Holophonor_Example/Pods-Holophonor_Example.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
