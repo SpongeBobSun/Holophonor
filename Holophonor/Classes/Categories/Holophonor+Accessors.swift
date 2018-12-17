@@ -14,6 +14,9 @@ import AVFoundation
 
 extension Holophonor {
     public func getAllSongs() -> [MediaItem] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaItem_] = []
         let req = NSFetchRequest<MediaItem_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
@@ -34,6 +37,9 @@ extension Holophonor {
     }
     
     public func getAllSongs(in source: MediaSource) -> [MediaItem] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaItem_] = []
         let req = NSFetchRequest<MediaItem_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
@@ -54,15 +60,22 @@ extension Holophonor {
     }
     
     public func getAllAlbums() -> [MediaCollection] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaCollection_] = []
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "collectionType == %llu ", CollectionType.Album.rawValue)
         req.predicate = filter
+        
+        let itemReq = NSFetchRequest<MediaItem_>()
+        itemReq.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
+        
         do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult ?? []
+            let result = try context.fetch(req)
+            ret = result
+            let _ = try context.fetch(itemReq)
             #if DEBUG
                 print("-----Scanned \(ret.count) albums -----")
             #endif
@@ -75,6 +88,9 @@ extension Holophonor {
     }
     
     public func getAllArtists() -> [MediaCollection] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaCollection_] = []
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
@@ -96,6 +112,9 @@ extension Holophonor {
     }
     
     public func getAllGenres() -> [MediaCollection] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaCollection_] = []
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
@@ -114,6 +133,9 @@ extension Holophonor {
     }
     
     public func getGenreBy(name: String) -> MediaCollection? {
+        if self.reloading {
+            return nil
+        }
         var ret: MediaCollection_? = nil
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
@@ -130,6 +152,9 @@ extension Holophonor {
     }
     
     public func getAlbumBy(name: String) -> MediaCollection? {
+        if self.reloading {
+            return nil
+        }
         var ret: MediaCollection_? = nil
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
@@ -148,6 +173,9 @@ extension Holophonor {
     }
     
     public func getAlbumBy(artist: String, name: String) -> MediaCollection? {
+        if self.reloading {
+            return nil
+        }
         var ret: MediaCollection_? = nil
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
@@ -164,6 +192,9 @@ extension Holophonor {
     }
     
     public func getSongBy(name: String) -> MediaItem? {
+        if self.reloading {
+            return nil
+        }
         var ret: MediaItem_? = nil
         let req = NSFetchRequest<MediaItem_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
@@ -180,6 +211,9 @@ extension Holophonor {
     }
     
     public func getSongBy(id: String) -> MediaItem? {
+        if self.reloading {
+            return nil
+        }
         var ret: MediaItem_? = nil
         let req = NSFetchRequest<MediaItem_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
@@ -196,6 +230,9 @@ extension Holophonor {
     }
     
     public func getSongsBy(artist: String) -> [MediaItem] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaItem_] = []
         let req = NSFetchRequest<MediaItem_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
@@ -214,6 +251,9 @@ extension Holophonor {
     }
     
     public func getSongsBy(artistId: String) -> [MediaItem] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaItem_] = []
         let req = NSFetchRequest<MediaItem_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
@@ -233,6 +273,9 @@ extension Holophonor {
     
     
     public func getSongsBy(genre: String) -> [MediaItem] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaItem_] = []
         let req = NSFetchRequest<MediaItem_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
@@ -252,14 +295,16 @@ extension Holophonor {
     
     public func searchSongBy(name: String) -> [MediaItem] {
         var ret: [MediaItem_] = []
+        if self.reloading {
+            return []
+        }
         let req = NSFetchRequest<MediaItem_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
         req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(title CONTAINS[cd] %@) AND (mediaType != %llu)", name, MediaSource.Representative.rawValue)
         req.predicate = filter
         do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem_>
-            ret = result.finalResult ?? []
+            ret = try context.fetch(req)
         } catch  {
             
         }
@@ -285,11 +330,14 @@ extension Holophonor {
     }
     
     public func getAlbumsBy(artist: String) -> [MediaCollection] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaCollection_] = []
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
         req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.artist == %@)",
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artist == %@)",
                                     CollectionType.Album.rawValue,
                                     artist)
         context.performAndWait {
@@ -307,12 +355,40 @@ extension Holophonor {
         })
     }
     
-    public func getArtistsBy(genre: String) -> [MediaCollection] {
+    public func getAlbumsBy(artistId: String) -> [MediaCollection] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaCollection_] = []
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
         req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.genre == %@)",
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artistPersistentID == %@)",
+                                    CollectionType.Album.rawValue,
+                                    artistId)
+        context.performAndWait {
+            do {
+                ret = try context.fetch(req)
+            } catch  {
+                #if DEBUG
+                print(error)
+                #endif
+            }
+        }
+        return ret.map({ (item_) -> MediaCollection in
+            return MediaCollection(withRawValue: item_)
+        })
+    }
+    
+    public func getArtistsBy(genre: String) -> [MediaCollection] {
+        if self.reloading {
+            return []
+        }
+        var ret: [MediaCollection_] = []
+        let req = NSFetchRequest<MediaCollection_>()
+        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
+        req.returnsObjectsAsFaults = false
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.genre == %@)",
                                     CollectionType.Artist.rawValue,
                                     genre)
         do {
@@ -327,11 +403,14 @@ extension Holophonor {
     }
     
     public func getArtistBy(name: String) -> MediaCollection? {
+        if self.reloading {
+            return nil
+        }
         var ret: MediaCollection_?
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
         req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.artist == %@)",
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artist == %@)",
                                     CollectionType.Artist.rawValue,
                                     name)
         do {
@@ -344,11 +423,14 @@ extension Holophonor {
     }
     
     public func getArtistBy(id: String) -> MediaCollection? {
+        if self.reloading {
+            return nil
+        }
         var ret: MediaCollection_?
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
         req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY persistentID == %@)",
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (persistentID == %@)",
                                     CollectionType.Artist.rawValue,
                                     id)
         do {
@@ -361,11 +443,14 @@ extension Holophonor {
     }
     
     public func getAlbumsBy(genre: String) -> [MediaCollection] {
+        if self.reloading {
+            return []
+        }
         var ret: [MediaCollection_] = []
         let req = NSFetchRequest<MediaCollection_>()
         req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
         req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (ANY representativeItem.genre == %@)",
+        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.genre == %@)",
                                     CollectionType.Album.rawValue,
                                     genre)
         do {

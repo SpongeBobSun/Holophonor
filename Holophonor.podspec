@@ -39,5 +39,6 @@ TODO: Add long description of the pod here.
   # s.public_header_files = 'Pod/Classes/**/*.h'
    s.frameworks = 'UIKit', 'CoreData', 'MediaPlayer', 'AVFoundation'
    s.resource_bundles = {'Holophonor' => 'Holophonor/*.xcdatamodeld'}
-  # s.dependency 'AFNetworking', '~> 2.3'
+   s.dependency 'RxSwift', '~> 4.0'
+   s.dependency 'RxCocoa', '~> 4.0'
 end

@@ -36,7 +36,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         self.holo = Holophonor.instance
-        let _ = holo.addLocalDirectory(dir: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
         infoLabel.numberOfLines = 3
         tableView.delegate = self
         tableView.dataSource = self
@@ -140,7 +139,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     @IBAction func didClickQueryAlbum(_ sender: Any) {
         self.queryDimension = QueryDimension.Album
-        if inputArtist.isUserInteractionEnabled {
+        if inputArtist.isUserInteractionEnabled && inputArtist.text?.count != 0 {
             let collections = holo.getAlbumsBy(artist: inputArtist.text ?? "")
             items = []
             for collection in collections {
@@ -148,9 +147,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }
             tableView.reloadData()
         } else if inputAlbum.isUserInteractionEnabled {
-            let collection = holo.getAlbumBy(name: inputAlbum.text ?? "")
-            if collection != nil {
-                items = [collection?.representativeItem] as! [MediaItem]
+            if inputAlbum.text?.count != 0 {
+                let collection = holo.getAlbumBy(name: inputAlbum.text!)
+                if collection != nil {
+                    items = [collection?.representativeItem] as! [MediaItem]
+                }
+            } else {
+                items = []
+                let collections = holo.getAllAlbums()
+                for collection in collections {
+                    items.append(collection.representativeItem!)
+                }
             }
             tableView.reloadData()
         } else if inputGenre.isUserInteractionEnabled {
@@ -245,6 +252,18 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 116
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        switch self.queryDimension {
+        case .Album:
+            break
+        case .Artist:
+            break
+        default:
+            break
+        }
     }
 }
 

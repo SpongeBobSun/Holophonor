@@ -21,6 +21,7 @@ public class MediaItem: Hashable {
     public var mpPersistentID: String?
     public var persistentID: String?
     public var title: String?
+    public var duration: Double
     private var _itemArtwork: UIImage? = nil;
     
     init(withRawValue item: MediaItem_) {
@@ -35,11 +36,12 @@ public class MediaItem: Hashable {
         self.mpPersistentID = item.mpPersistentID
         self.persistentID = item.persistentID
         self.title = item.title
+        self.duration = item.duration
     }
     
     open func getArtworkWithSize(size: CGSize) -> UIImage? {
-        if _itemArtwork != nil {
-            return _itemArtwork;
+        if self._itemArtwork != nil {
+            return self._itemArtwork;
         }
         switch self.mediaType {
         case MediaSource.iTunes.rawValue:

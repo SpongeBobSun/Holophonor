@@ -20,9 +20,10 @@ public class MediaCollection {
     init(withRawValue value: MediaCollection_) {
         self.collectionType = Int64(value.collectionType)
         self.mpPersistenceID = value.mpPersistenceID == nil ? nil : String(value.mpPersistenceID!)
+        self.persistentID = value.persistentID == nil ? nil : String(value.persistentID!)
         self.representativeID = value.representativeID == nil ? nil : String(value.representativeID!)
         self.representativeTitle = value.representativeTitle == nil ? nil : String(value.representativeTitle!)
-        self.items = Array(value.items ?? NSSet()).map { (each) -> MediaItem in
+        self.items = value.items?.allObjects.map { (each) -> MediaItem in
             return MediaItem(withRawValue: each as! MediaItem_)
         }
 
