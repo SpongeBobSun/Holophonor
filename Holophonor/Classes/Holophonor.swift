@@ -212,6 +212,7 @@ open class Holophonor: NSObject {
                 repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
                 repItem.artist = item.artist ?? holderConfig.unknownArtistHolder
                 repItem.mediaType = MediaSource.Representative.rawValue
+                repItem.genre = item.genre ?? holderConfig.unknownGenreHolder
                 repItem.persistentID = UUID().uuidString
 
                 let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
@@ -454,6 +455,7 @@ open class Holophonor: NSObject {
             let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
             repItem.artist = item.artist ?? holderConfig.unknownArtistHolder
             repItem.mediaType = MediaSource.Representative.rawValue
+            repItem.genre = item.genre ?? holderConfig.unknownGenreHolder
             repItem.persistentID = UUID().uuidString
             repItem.artistPersistentID = UUID().uuidString
             
