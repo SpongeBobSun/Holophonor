@@ -22,11 +22,12 @@
         <attribute name="mpPersistentID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="persistentID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="trackNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="fromCollection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MediaCollection_" inverseName="items" inverseEntity="MediaCollection_" syncable="YES"/>
         <relationship name="representedCollection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MediaCollection_" inverseName="representativeItem" inverseEntity="MediaCollection_" syncable="YES"/>
     </entity>
     <elements>
         <element name="MediaCollection_" positionX="-54" positionY="-9" width="128" height="150"/>
-        <element name="MediaItem_" positionX="156.62109375" positionY="50.40625" width="128" height="255"/>
+        <element name="MediaItem_" positionX="156.62109375" positionY="50.40625" width="128" height="270"/>
     </elements>
 </model>

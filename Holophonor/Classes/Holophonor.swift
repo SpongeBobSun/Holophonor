@@ -120,6 +120,7 @@ open class Holophonor: NSObject {
                 insert.mediaType = MediaSource.iTunes.rawValue
                 insert.persistentID = UUID().uuidString
                 insert.duration = song.playbackDuration
+                insert.trackNumber = Int64(song.albumTrackNumber)
                 addCollectionFromiTunesSong(item: song, wrapped: insert)
             }
         }
@@ -347,7 +348,7 @@ open class Holophonor: NSObject {
         
         let fmts = asset.availableMetadataFormats
         for fmt in fmts {
-            let values = asset.metadata(forFormat: fmt)
+            var values = asset.metadata(forFormat: fmt)
             for value in values {
                 if (value.commonKey == nil) {
                     continue
@@ -368,6 +369,15 @@ open class Holophonor: NSObject {
                         break
                     default:
                         break
+                    }
+                }
+            }
+            values = asset.metadata(forFormat: AVMetadataFormat.id3Metadata)
+            for value in values {
+                if (value.key?.isKind(of: NSString.self) ?? false) {
+                    if ("TRCK".elementsEqual(value.key as! String)) {
+                        let strValue = value.stringValue ?? "0/0"
+                        insert.trackNumber = Int64(strValue.split(separator: "/").first ?? "0") ?? 0
                     }
                 }
             }

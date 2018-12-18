@@ -2,7 +2,7 @@
 //  MediaItem_+CoreDataProperties.swift
 //  
 //
-//  Created by Bob on 2018/12/14.
+//  Created by Bob on 2018/12/18.
 //
 //
 
@@ -28,7 +28,8 @@ extension MediaItem_ {
     @NSManaged public var mpPersistentID: String?
     @NSManaged public var persistentID: String?
     @NSManaged public var title: String?
-    @NSManaged public var representedCollection: MediaCollection_?
+    @NSManaged public var trackNumber: Int64
     @NSManaged public var fromCollection: MediaCollection_?
+    @NSManaged public var representedCollection: MediaCollection_?
 
 }

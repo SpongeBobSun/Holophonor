@@ -13,24 +13,35 @@ import CoreData
 import AVFoundation
 
 extension Holophonor {
+    
+    fileprivate func doFetch<T: NSManagedObject>(predict: NSPredicate, sortDescriptors: [NSSortDescriptor]) -> [T] {
+        let request = NSFetchRequest<T>()
+        request.entity = NSEntityDescription.entity(forEntityName: String(describing: T.self), in: self.context)
+        request.predicate = predict
+        request.sortDescriptors = sortDescriptors
+        request.returnsObjectsAsFaults = false
+        var ret: [T] = []
+        do {
+            let result = try context.execute(request) as! NSAsynchronousFetchResult<T>
+            ret = result.finalResult ?? []
+        } catch let e {
+            #if DEBUG
+            print(e)
+            #endif
+        }
+        return ret
+    }
+
     public func getAllSongs() -> [MediaItem] {
         if self.reloading {
             return []
         }
         var ret: [MediaItem_] = []
-        let req = NSFetchRequest<MediaItem_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        req.predicate = NSPredicate(format: "(mediaType < %llu)", MediaSource.Representative.rawValue)
-        req.returnsObjectsAsFaults = false
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem_>
-            ret = result.finalResult ?? []
-            #if DEBUG
-                print("-----Scanned \(ret.count) songs -----")
-            #endif
-        } catch let e {
-            print(e)
-        }
+        ret = doFetch(predict: NSPredicate(format: "(mediaType < %llu)", MediaSource.Representative.rawValue),
+                      sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)])
+        #if DEBUG
+        print("-----Scanned \(ret.count) songs -----")
+        #endif
         return ret.map({ (item_) -> MediaItem in
             return MediaItem(withRawValue: item_)
         })
@@ -41,19 +52,11 @@ extension Holophonor {
             return []
         }
         var ret: [MediaItem_] = []
-        let req = NSFetchRequest<MediaItem_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(mediaType == %llu)", source.rawValue)
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem_>
-            ret = result.finalResult ?? []
-            #if DEBUG
-            print("-----Scanned \(ret.count) songs in source typed \(source.rawValue) -----")
-            #endif
-        } catch let e {
-            print(e)
-        }
+        ret = doFetch(predict: NSPredicate(format: "(mediaType == %llu)", source.rawValue),
+                      sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)])
+        #if DEBUG
+        print("-----Scanned \(ret.count) songs in source typed \(source.rawValue) -----")
+        #endif
         return ret.map({ (item_) -> MediaItem in
             return MediaItem(withRawValue: item_)
         })
@@ -64,24 +67,11 @@ extension Holophonor {
             return []
         }
         var ret: [MediaCollection_] = []
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        let filter = NSPredicate(format: "collectionType == %llu ", CollectionType.Album.rawValue)
-        req.predicate = filter
-        
-        let itemReq = NSFetchRequest<MediaItem_>()
-        itemReq.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        
-        do {
-            let result = try context.fetch(req)
-            ret = result
-            let _ = try context.fetch(itemReq)
-            #if DEBUG
-                print("-----Scanned \(ret.count) albums -----")
-            #endif
-        } catch {
-            
-        }
+        ret = doFetch(predict: NSPredicate(format: "collectionType == %llu ", CollectionType.Album.rawValue),
+                      sortDescriptors: [NSSortDescriptor(key: "representativeItem.albumTitle", ascending: true)])
+        #if DEBUG
+        print("-----Scanned \(ret.count) albums -----")
+        #endif
         return ret.map({ (item_) -> MediaCollection in
             return MediaCollection(withRawValue: item_)
         })
@@ -92,20 +82,12 @@ extension Holophonor {
             return []
         }
         var ret: [MediaCollection_] = []
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "collectionType == %llu ", CollectionType.Artist.rawValue)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult ?? []
-            #if DEBUG
-                print("-----Scanned \(ret.count) artists -----")
-            #endif
-        } catch {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "representativeItem.artist", ascending: true)])
+        #if DEBUG
+        print("-----Scanned \(ret.count) artists -----")
+        #endif
+
         return ret.map({ (item_) -> MediaCollection in
             return MediaCollection(withRawValue: item_)
         })
@@ -116,17 +98,8 @@ extension Holophonor {
             return []
         }
         var ret: [MediaCollection_] = []
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "collectionType == %llu", CollectionType.Genre.rawValue)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult ?? []
-        } catch  {
-            print(error)
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "representativeItem.genre", ascending: true)])
         return ret.map({ (item_) -> MediaCollection in
             return MediaCollection(withRawValue: item_)
         })
@@ -137,17 +110,8 @@ extension Holophonor {
             return nil
         }
         var ret: MediaCollection_? = nil
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(collectionType == %llu) AND ()", CollectionType.Genre.rawValue)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult?.first
-        } catch {
-            print(error)
-        }
+        ret = doFetch(predict: filter, sortDescriptors: []).first
         return ret == nil ? nil : MediaCollection(withRawValue: ret!)
     }
     
@@ -156,19 +120,10 @@ extension Holophonor {
             return nil
         }
         var ret: MediaCollection_? = nil
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeTitle == %@) ",
                                  CollectionType.Album.rawValue,
                                  name)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult?.first
-        } catch {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: []).first
         return ret == nil ? nil : MediaCollection(withRawValue: ret!)
     }
     
@@ -177,17 +132,8 @@ extension Holophonor {
             return nil
         }
         var ret: MediaCollection_? = nil
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeTitle == %@) AND (representativeItem.artist == %@)", CollectionType.Album.rawValue, name, artist)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult?.first
-        } catch  {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: []).first
         return ret == nil ? nil : MediaCollection(withRawValue: ret!)
     }
     
@@ -196,17 +142,8 @@ extension Holophonor {
             return nil
         }
         var ret: MediaItem_? = nil
-        let req = NSFetchRequest<MediaItem_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(title == %@) AND (mediaType != %llu)", name, MediaSource.Representative.rawValue)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem_>
-            ret = result.finalResult?.first
-        } catch  {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: []).first
         return ret == nil ? nil : MediaItem(withRawValue: ret!)
     }
     
@@ -215,17 +152,8 @@ extension Holophonor {
             return nil
         }
         var ret: MediaItem_? = nil
-        let req = NSFetchRequest<MediaItem_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(persistentID == %@) AND (mediaType != %llu)", id, MediaSource.Representative.rawValue)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem_>
-            ret = result.finalResult?.first
-        } catch  {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: []).first
         return ret == nil ? nil : MediaItem(withRawValue: ret!)
     }
     
@@ -234,17 +162,8 @@ extension Holophonor {
             return []
         }
         var ret: [MediaItem_] = []
-        let req = NSFetchRequest<MediaItem_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(artist == %@) AND (mediaType != %llu)", artist, MediaSource.Representative.rawValue)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem_>
-            ret = result.finalResult ?? []
-        } catch  {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)])
         return ret.map({ (item_) -> MediaItem in
             return MediaItem(withRawValue: item_)
         })
@@ -255,17 +174,8 @@ extension Holophonor {
             return []
         }
         var ret: [MediaItem_] = []
-        let req = NSFetchRequest<MediaItem_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(artistPersistentID == %@) AND (mediaType != %llu)", artistId, MediaSource.Representative.rawValue)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem_>
-            ret = result.finalResult ?? []
-        } catch  {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)])
         return ret.map({ (item_) -> MediaItem in
             return MediaItem(withRawValue: item_)
         })
@@ -277,17 +187,8 @@ extension Holophonor {
             return []
         }
         var ret: [MediaItem_] = []
-        let req = NSFetchRequest<MediaItem_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(genre == %@) AND (mediaType != %llu)", genre, MediaSource.Representative.rawValue)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaItem_>
-            ret = result.finalResult ?? []
-        } catch  {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)])
         return ret.map({ (item_) -> MediaItem in
             return MediaItem(withRawValue: item_)
         })
@@ -298,16 +199,8 @@ extension Holophonor {
         if self.reloading {
             return []
         }
-        let req = NSFetchRequest<MediaItem_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(title CONTAINS[cd] %@) AND (mediaType != %llu)", name, MediaSource.Representative.rawValue)
-        req.predicate = filter
-        do {
-            ret = try context.fetch(req)
-        } catch  {
-            
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "title", ascending: true)])
         return ret.map({ (item_) -> MediaItem in
             return MediaItem(withRawValue: item_)
         })
@@ -315,17 +208,8 @@ extension Holophonor {
     
     public func getAlbumBy(identifier: String) -> MediaCollection? {
         var ret: MediaCollection_? = nil
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
         let filter = NSPredicate(format: "(collectionType == %llu) AND (persistentID == %@)", CollectionType.Album.rawValue, identifier)
-        req.predicate = filter
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult?.first
-        } catch {
-            print(error)
-        }
+        ret = doFetch(predict: filter, sortDescriptors: []).first
         return ret == nil ? nil : MediaCollection(withRawValue: ret!)
     }
     
@@ -334,22 +218,10 @@ extension Holophonor {
             return []
         }
         var ret: [MediaCollection_] = []
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artist == %@)",
+        let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artist == %@)",
                                     CollectionType.Album.rawValue,
                                     artist)
-        context.performAndWait {
-            do {
-                let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-                ret = result.finalResult ?? []
-            } catch  {
-                #if DEBUG
-                    print(error)
-                #endif
-            }
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "representativeItem.albumTitle", ascending: true)])
         return ret.map({ (item_) -> MediaCollection in
             return MediaCollection(withRawValue: item_)
         })
@@ -360,21 +232,10 @@ extension Holophonor {
             return []
         }
         var ret: [MediaCollection_] = []
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artistPersistentID == %@)",
+        let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artistPersistentID == %@)",
                                     CollectionType.Album.rawValue,
                                     artistId)
-        context.performAndWait {
-            do {
-                ret = try context.fetch(req)
-            } catch  {
-                #if DEBUG
-                print(error)
-                #endif
-            }
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "representativeItem.albumTitle", ascending: true)])
         return ret.map({ (item_) -> MediaCollection in
             return MediaCollection(withRawValue: item_)
         })
@@ -385,18 +246,10 @@ extension Holophonor {
             return []
         }
         var ret: [MediaCollection_] = []
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.genre == %@)",
+        let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.genre == %@)",
                                     CollectionType.Artist.rawValue,
                                     genre)
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult ?? []
-        } catch {
-            print(error)
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "representativeItem.artist", ascending: true)])
         return ret.map({ (item_) -> MediaCollection in
             return MediaCollection(withRawValue: item_)
         })
@@ -407,18 +260,10 @@ extension Holophonor {
             return nil
         }
         var ret: MediaCollection_?
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artist == %@)",
+        let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artist == %@)",
                                     CollectionType.Artist.rawValue,
                                     name)
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult?.first ?? nil
-        } catch {
-            print(error)
-        }
+        ret = doFetch(predict: filter, sortDescriptors: []).first
         return ret == nil ? nil : MediaCollection(withRawValue: ret!)
     }
     
@@ -427,18 +272,10 @@ extension Holophonor {
             return nil
         }
         var ret: MediaCollection_?
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (persistentID == %@)",
+        let filter = NSPredicate(format: "(collectionType == %llu) AND (persistentID == %@)",
                                     CollectionType.Artist.rawValue,
                                     id)
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult?.first ?? nil
-        } catch {
-            print(error)
-        }
+        ret = doFetch(predict: filter, sortDescriptors: []).first
         return ret == nil ? nil : MediaCollection(withRawValue: ret!)
     }
     
@@ -447,18 +284,10 @@ extension Holophonor {
             return []
         }
         var ret: [MediaCollection_] = []
-        let req = NSFetchRequest<MediaCollection_>()
-        req.entity = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
-        req.returnsObjectsAsFaults = false
-        req.predicate = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.genre == %@)",
+        let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.genre == %@)",
                                     CollectionType.Album.rawValue,
                                     genre)
-        do {
-            let result = try context.execute(req) as! NSAsynchronousFetchResult<MediaCollection_>
-            ret = result.finalResult ?? []
-        } catch {
-            print(error)
-        }
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "representativeItem.albumTitle", ascending: true)])
         return ret.map({ (item_) -> MediaCollection in
             return MediaCollection(withRawValue: item_)
         })

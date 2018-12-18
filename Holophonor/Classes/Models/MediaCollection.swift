@@ -25,7 +25,9 @@ public class MediaCollection {
         self.representativeTitle = value.representativeTitle == nil ? nil : String(value.representativeTitle!)
         self.items = value.items?.allObjects.map { (each) -> MediaItem in
             return MediaItem(withRawValue: each as! MediaItem_)
-        }
+            }.sorted(by: { (a, b) -> Bool in
+                a.trackNumber < b.trackNumber
+            })
 
         if value.representativeItem != nil {
             self.representativeItem = MediaItem(withRawValue: value.representativeItem!)

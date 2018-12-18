@@ -17,7 +17,8 @@ public class MediaItem: Hashable {
     public var fileURL: String?
     public var genre: String?
     public var genrePersistentID: String?
-    public var mediaType: Int64
+    public var mediaType: MediaSource
+    public var trackNumber: Int64
     public var mpPersistentID: String?
     public var persistentID: String?
     public var title: String?
@@ -32,11 +33,12 @@ public class MediaItem: Hashable {
         self.fileURL = item.fileURL
         self.genre = item.genre
         self.genrePersistentID = item.genrePersistentID
-        self.mediaType = item.mediaType
+        self.mediaType = MediaSource(rawValue: item.mediaType)!
         self.mpPersistentID = item.mpPersistentID
         self.persistentID = item.persistentID
         self.title = item.title
         self.duration = item.duration
+        self.trackNumber = item.trackNumber
     }
     
     open func getArtworkWithSize(size: CGSize) -> UIImage? {
@@ -44,13 +46,13 @@ public class MediaItem: Hashable {
             return self._itemArtwork;
         }
         switch self.mediaType {
-        case MediaSource.iTunes.rawValue:
+        case .iTunes:
             let predictor = MPMediaPropertyPredicate.init(value: self.mpPersistentID, forProperty: MPMediaItemPropertyPersistentID, comparisonType: .equalTo);
             let query = MPMediaQuery.songs()
             query.addFilterPredicate(predictor)
             _itemArtwork = query.items?.first?.artwork?.image(at: size)
             break
-        case MediaSource.Local.rawValue:
+        case .Local:
             let asset = AVAsset.init(url: URL.init(string: self.fileURL!)!)
             let artworks = AVMetadataItem.metadataItems(from: asset.metadata, withKey: AVMetadataKey.commonKeyArtwork, keySpace: AVMetadataKeySpace.common);
             for item in artworks {
