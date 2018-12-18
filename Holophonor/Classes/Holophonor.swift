@@ -51,7 +51,9 @@ open class Holophonor: NSObject {
                 NSSQLitePragmasOption: ["journal_mode": "delete"]
             ])
         } catch let e {
+            #if DEBUG
             print(e)
+            #endif
         }
         
         context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
@@ -96,8 +98,8 @@ open class Holophonor: NSObject {
             self.reloadiTunes()
             self.reloadLocal()
             DispatchQueue.main.sync {
-                self.rescanObservable.onNext(true)
                 self.reloading = false
+                self.rescanObservable.onNext(true)
                 complition()
             }
         }
@@ -296,10 +298,8 @@ open class Holophonor: NSObject {
             for var path in files {
                 path = dir + "/" + path
                 if _isFolder(path: path) {
-                    print("folder")
                     _handleFolder(path: path)
                 } else {
-                    print("not folder")
                     if path.hasSuffix("m4a") || path.hasSuffix("mp3") || path.hasSuffix("wav") {
                         addItemFromFile(path: path)
                     }
