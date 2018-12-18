@@ -14,7 +14,8 @@ public class MediaItem: Hashable {
     public var albumTitle: String?
     public var artist: String?
     public var artistPersistentID: String?
-    public var fileURL: String?
+    public var fileURL: URL?
+    public var filePath: String?
     public var genre: String?
     public var genrePersistentID: String?
     public var mediaType: MediaSource
@@ -30,10 +31,15 @@ public class MediaItem: Hashable {
         self.albumTitle = item.albumTitle
         self.artist = item.artist
         self.artistPersistentID = item.artistPersistentID
-        self.fileURL = item.fileURL
         self.genre = item.genre
         self.genrePersistentID = item.genrePersistentID
         self.mediaType = MediaSource(rawValue: item.mediaType)!
+        if self.mediaType == .Local {
+            self.fileURL = URL(fileURLWithPath: item.fileURL ?? "")
+            self.filePath = item.fileURL
+        } else if self.mediaType == .iTunes {
+            self.fileURL = URL(string: item.fileURL ?? "")
+        }
         self.mpPersistentID = item.mpPersistentID
         self.persistentID = item.persistentID
         self.title = item.title
@@ -53,11 +59,10 @@ public class MediaItem: Hashable {
             _itemArtwork = query.items?.first?.artwork?.image(at: size)
             break
         case .Local:
-            let asset = AVAsset.init(url: URL.init(string: self.fileURL!)!)
-            let artworks = AVMetadataItem.metadataItems(from: asset.metadata, withKey: AVMetadataKey.commonKeyArtwork, keySpace: AVMetadataKeySpace.common);
-            for item in artworks {
-                _itemArtwork = UIImage.init(data: item.dataValue!)
-            }
+            let asset = AVAsset(url: URL(fileURLWithPath: self.filePath!))
+            let artworks = AVMetadataItem.metadataItems(from: asset.metadata, withKey: AVMetadataKey.commonKeyArtwork, keySpace: AVMetadataKeySpace.common)
+            let dataValue = artworks.first?.dataValue!
+            _itemArtwork = dataValue == nil ? nil : UIImage.init(data: dataValue!)
             break
         default:
             break

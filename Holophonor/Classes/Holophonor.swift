@@ -345,7 +345,7 @@ open class Holophonor: NSObject {
         let entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: context)
         let insert = MediaItem_(entity: entity!, insertInto: context)
         insert.mediaType = MediaSource.Local.rawValue
-        insert.fileURL = URL(fileURLWithPath: path).absoluteString
+        insert.fileURL = path
         
         let fmts = asset.availableMetadataFormats
         for fmt in fmts {
