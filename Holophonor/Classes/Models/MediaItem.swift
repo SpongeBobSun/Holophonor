@@ -9,7 +9,7 @@ import UIKit
 import MediaPlayer
 import AVFoundation
 
-public class MediaItem: Hashable {
+public class MediaItem: Hashable, CustomStringConvertible {
     public var albumPersistentID: String?
     public var albumTitle: String?
     public var artist: String?
@@ -95,5 +95,9 @@ public class MediaItem: Hashable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(persistentID)
+    }
+    
+    public var description: String {
+        return "<\(type(of: self)): title = \(String(describing: title)), mediaType = \(mediaType), artist = \(String(describing: artist)), album = \(String(describing: albumTitle)), filePath: \(String(describing: filePath))>"
     }
 }

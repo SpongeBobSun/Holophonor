@@ -16,7 +16,7 @@ open class Holophonor: NSObject {
     var storeUrl: String
     var rescanObservable: PublishSubject<Bool>
     var progressObserable: PublishSubject<Int64>
-    var reloading: Bool = false // Cover me ?
+    var reloading: Bool = false // Cover me ? 🔫
     var totalCount: Int64 = 0
     
     public static let instance : Holophonor = {
@@ -232,7 +232,7 @@ open class Holophonor: NSObject {
             self.context.performAndWait {
                 let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
                 repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
-                repItem.artist = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
+                repItem.artist = item.artist == nil || item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
                 repItem.mediaType = MediaSource.Representative.rawValue
                 repItem.genre = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre
                 repItem.persistentID = UUID().uuidString
@@ -240,7 +240,7 @@ open class Holophonor: NSObject {
                 let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
                 toAdd.mpPersistenceID = "\(item.albumArtistPersistentID.littleEndian)"
                 toAdd.representativeItem = repItem
-                toAdd.representativeTitle = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
+                toAdd.representativeTitle = item.artist == nil || item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
                 toAdd.collectionType = CollectionType.Artist.rawValue
                 toAdd.persistentID = toAdd.mpPersistenceID
                 toAdd.addToItems((album?.representativeItem!)!)

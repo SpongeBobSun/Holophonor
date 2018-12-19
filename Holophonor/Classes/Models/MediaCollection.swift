@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class MediaCollection {
+public class MediaCollection: CustomStringConvertible {
     public var collectionType: Int64
     public var mpPersistenceID: String?
     public var persistentID: String?
@@ -44,5 +44,9 @@ public class MediaCollection {
             return _collectionArtwork
         }
         return nil
+    }
+    
+    public var description: String {
+        return "<\(type(of: self)): items: \(String(describing: items)) \n representativeItem: \(String(describing:representativeItem))>"
     }
 }
