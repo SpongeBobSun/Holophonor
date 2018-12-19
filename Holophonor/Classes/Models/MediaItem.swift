@@ -60,8 +60,21 @@ public class MediaItem: Hashable {
             break
         case .Local:
             let asset = AVAsset(url: URL(fileURLWithPath: self.filePath!))
-            let artworks = AVMetadataItem.metadataItems(from: asset.metadata, withKey: AVMetadataKey.commonKeyArtwork, keySpace: AVMetadataKeySpace.common)
-            let dataValue = artworks.first?.dataValue!
+            let availableFormats = asset.availableMetadataFormats
+            var dataValue: Data? = nil
+            for fmt in availableFormats {
+                if dataValue != nil {
+                    break
+                }
+                for meta in asset.metadata(forFormat: fmt) {
+                    if meta.commonKey == AVMetadataKey.commonKeyArtwork {
+                        dataValue = meta.dataValue
+                        if dataValue != nil {
+                            break
+                        }
+                    }
+                }
+            }
             _itemArtwork = dataValue == nil ? nil : UIImage.init(data: dataValue!)
             break
         default:
