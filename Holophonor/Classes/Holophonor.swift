@@ -92,6 +92,10 @@ open class Holophonor: NSObject {
         }
     }
     
+    open func isRescanning() -> Bool {
+        return self.reloading
+    }
+    
     open func observeRescan() -> PublishSubject<Bool> {
         return self.rescanObservable
     }
