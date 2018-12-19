@@ -15,7 +15,9 @@ open class Holophonor: NSObject {
     var holderConfig: HoloHolderConfig
     var storeUrl: String
     var rescanObservable: PublishSubject<Bool>
+    var progressObserable: PublishSubject<Int64>
     var reloading: Bool = false // Cover me ?
+    var totalCount: Int64 = 0
     
     public static let instance : Holophonor = {
         let ret = Holophonor()
@@ -61,6 +63,7 @@ open class Holophonor: NSObject {
         holophonorQueue = DispatchQueue(label: "holophonor_queue" )
         self.holderConfig = holderConfig ?? HoloHolderConfig()
         self.rescanObservable = PublishSubject<Bool>()
+        self.progressObserable = PublishSubject<Int64>()
         super.init()
         let documentPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).first ?? ""
         let _ = self.addLocalDirectory(dir: documentPath)
@@ -72,6 +75,9 @@ open class Holophonor: NSObject {
     }
     
     open func rescan(_ force: Bool = false, complition: @escaping () -> Void) -> Void {
+        if self.reloading {
+            return
+        }
         if !authorized {
             if #available(iOS 9.3, *) {
                 MPMediaLibrary.requestAuthorization({ (result) in
@@ -90,25 +96,32 @@ open class Holophonor: NSObject {
         return self.rescanObservable
     }
     
+    open func observeProgress() -> PublishSubject<Int64> {
+        return self.progressObserable
+    }
+    
     func reloadIfNeeded(_ force: Bool = false, complition: @escaping () -> Void) {
         self.reloading = true
         self.holophonorQueue.async {
             let _ = MPMediaLibrary.default().lastModifiedDate
             self.dropAll()
+            self.progressObserable.onNext(0)
             self.reloadiTunes()
+            self.progressObserable.onNext(50)
             self.reloadLocal()
             DispatchQueue.main.sync {
                 self.reloading = false
                 self.rescanObservable.onNext(true)
                 complition()
+                self.progressObserable.onNext(100)
             }
         }
     }
     
     fileprivate func reloadiTunes() {
         let songs = MPMediaQuery.songs().items ?? []
+        var progress: Float64 = 0.0
         for song in songs {
-            
             let entity = NSEntityDescription.entity(forEntityName: "MediaItem_", in: context)
             self.context.performAndWait {
                 let insert = MediaItem_(entity: entity!, insertInto: context)
@@ -124,10 +137,11 @@ open class Holophonor: NSObject {
                 insert.duration = song.playbackDuration
                 insert.trackNumber = Int64(song.albumTrackNumber)
                 addCollectionFromiTunesSong(item: song, wrapped: insert)
+                progress += 1
+                progressObserable.onNext(Int64((progress / Double(songs.count)) * 50))
             }
         }
-    
-    
+
         do {
             try self.context.save()
         } catch let e {
@@ -295,15 +309,18 @@ open class Holophonor: NSObject {
             } catch {
                 continue
             }
+            var count = 0
             for var path in files {
                 path = dir + "/" + path
                 if _isFolder(path: path) {
-                    _handleFolder(path: path)
+                    _handleFolder(path: path, count: files.count)
                 } else {
                     if path.hasSuffix("m4a") || path.hasSuffix("mp3") || path.hasSuffix("wav") {
                         addItemFromFile(path: path)
+                        progressObserable.onNext(Int64(Float(count) / Float(files.count)) + 50)
                     }
                 }
+                count += 1
             }
         }
     
@@ -321,22 +338,25 @@ open class Holophonor: NSObject {
         return ret.boolValue
     }
     
-    fileprivate func _handleFolder(path: String) {
+    fileprivate func _handleFolder(path: String, count: Int) {
         var files: [String] = []
         do {
             try files = FileManager.default.contentsOfDirectory(atPath: path)
         } catch let e {
             print(e)
         }
+        var count = 0
         for var subPath in files {
             subPath = path + "/" + subPath
             if _isFolder(path: subPath) {
-                _handleFolder(path: subPath)
+                _handleFolder(path: subPath, count: count + files.count)
             } else {
                 if subPath.hasSuffix("m4a") || subPath.hasSuffix("mp3") || subPath.hasSuffix("wav") {
                     addItemFromFile(path: subPath)
+                    progressObserable.onNext(Int64(Float(count) / Float(files.count) * 50) + 50)
                 }
             }
+            count += 1
         }
     }
     
