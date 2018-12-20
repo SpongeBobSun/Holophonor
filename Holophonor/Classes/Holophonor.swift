@@ -232,15 +232,14 @@ open class Holophonor: NSObject {
             self.context.performAndWait {
                 let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
                 repItem.artistPersistentID = "\(item.albumArtistPersistentID.littleEndian)"
-                repItem.artist = item.artist == nil || item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
+                repItem.artist = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist ?? holderConfig.unknownArtistHolder
                 repItem.mediaType = MediaSource.Representative.rawValue
-                repItem.genre = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre
                 repItem.persistentID = UUID().uuidString
 
                 let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
                 toAdd.mpPersistenceID = "\(item.albumArtistPersistentID.littleEndian)"
                 toAdd.representativeItem = repItem
-                toAdd.representativeTitle = item.artist == nil || item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
+                toAdd.representativeTitle = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist ?? holderConfig.unknownArtistHolder
                 toAdd.collectionType = CollectionType.Artist.rawValue
                 toAdd.persistentID = toAdd.mpPersistenceID
                 toAdd.addToItems((album?.representativeItem!)!)
@@ -248,9 +247,7 @@ open class Holophonor: NSObject {
             }
         } else {
             artist = result.first!
-            self.context.performAndWait {
-                artist?.addToItems((album?.representativeItem!)!)
-            }
+            artist?.addToItems((album?.representativeItem!)!)
             if artist?.mpPersistenceID == nil {
                 artist?.mpPersistenceID = "\(item.artistPersistentID.littleEndian)"
             }
@@ -279,27 +276,26 @@ open class Holophonor: NSObject {
 
             let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
             repItem.genrePersistentID = "\(item.genrePersistentID.littleEndian)"
-            repItem.genre = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre
+            repItem.genre = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre ?? holderConfig.unknownGenreHolder
             repItem.mediaType = MediaSource.Representative.rawValue
             repItem.persistentID = UUID().uuidString
 
             let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
             toAdd.mpPersistenceID = "\(item.genrePersistentID.littleEndian)"
             toAdd.representativeItem = repItem
-            toAdd.representativeTitle = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre
+            toAdd.representativeTitle = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre ?? holderConfig.unknownGenreHolder
             toAdd.collectionType = CollectionType.Genre.rawValue
             toAdd.persistentID = toAdd.mpPersistenceID
-            toAdd.addToItems((artist?.representativeItem!)!)
             genre = toAdd
         } else {
             genre = result.first!
-            genre?.addToItems((artist?.representativeItem!)!)
             if genre?.mpPersistenceID == nil {
                 genre?.mpPersistenceID = "\(item.genrePersistentID.littleEndian)"
             }
         }
+        genre?.addToItems((artist?.representativeItem)!)
         artist?.representativeItem?.fromCollection = genre
-        
+
         wrapped.albumPersistentID = album?.persistentID
         wrapped.artistPersistentID = artist?.persistentID
         wrapped.genrePersistentID = genre?.persistentID
@@ -482,16 +478,14 @@ open class Holophonor: NSObject {
             let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
             
             let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
-            repItem.artist = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
+            repItem.artist = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist ?? holderConfig.unknownArtistHolder
             repItem.mediaType = MediaSource.Representative.rawValue
-            repItem.genre = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre
             repItem.persistentID = UUID().uuidString
             repItem.artistPersistentID = UUID().uuidString
             
             let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
-            toAdd.representativeTitle = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
+            toAdd.representativeTitle = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist ?? holderConfig.unknownArtistHolder
             toAdd.representativeItem = repItem
-            toAdd.representativeTitle = item.artist?.count == 0 ? holderConfig.unknownArtistHolder : item.artist
             toAdd.collectionType = CollectionType.Artist.rawValue
             toAdd.persistentID = UUID().uuidString
             artist = toAdd
@@ -519,14 +513,13 @@ open class Holophonor: NSObject {
             let entityCollection = NSEntityDescription.entity(forEntityName: "MediaCollection_", in: self.context)
             let entityItem = NSEntityDescription.entity(forEntityName: "MediaItem_", in: self.context)
             let repItem = MediaItem_(entity: entityItem!, insertInto: self.context)
-            repItem.genre = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre
+            repItem.genre = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre ?? holderConfig.unknownGenreHolder
             repItem.mediaType = MediaSource.Representative.rawValue
             repItem.persistentID = UUID().uuidString
             
             let toAdd = MediaCollection_(entity: entityCollection!, insertInto: self.context)
-            toAdd.representativeTitle = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre
+            toAdd.representativeTitle = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre ?? holderConfig.unknownGenreHolder
             toAdd.representativeItem = repItem
-            toAdd.representativeTitle = item.genre?.count == 0 ? holderConfig.unknownGenreHolder : item.genre
             toAdd.collectionType = CollectionType.Genre.rawValue
             toAdd.persistentID = UUID().uuidString
             genre = toAdd
@@ -534,6 +527,7 @@ open class Holophonor: NSObject {
             genre = result.first!
         }
         genre?.addToItems((artist?.representativeItem!)!)
+        artist?.representativeItem?.fromCollection = genre
 
         item.albumPersistentID = album?.persistentID
         item.artistPersistentID = artist?.persistentID
@@ -542,6 +536,7 @@ open class Holophonor: NSObject {
         album?.representativeItem?.artistPersistentID = artist?.persistentID
         item.artistPersistentID = artist?.persistentID
         item.genrePersistentID = genre?.persistentID
+        saveContext()
     }
     
     fileprivate func dropAll() {
