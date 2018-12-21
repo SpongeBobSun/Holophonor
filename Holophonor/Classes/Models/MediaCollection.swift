@@ -13,7 +13,8 @@ public class MediaCollection: CustomStringConvertible {
     public var persistentID: String?
     public var representativeID: String?
     public var representativeTitle: String?
-    public var items: [MediaItem]?
+    public var items: [MediaItem]?          // Solid items which representive a file on disk
+    public var allItems: [MediaItem]?       // All items contains representative items
     public var representativeItem: MediaItem?
     private var _collectionArtwork: UIImage? = nil;
 
@@ -23,12 +24,16 @@ public class MediaCollection: CustomStringConvertible {
         self.persistentID = value.persistentID == nil ? nil : String(value.persistentID!)
         self.representativeID = value.representativeID == nil ? nil : String(value.representativeID!)
         self.representativeTitle = value.representativeTitle == nil ? nil : String(value.representativeTitle!)
-        self.items = value.items?.allObjects.map { (each) -> MediaItem in
+        self.allItems = value.items?.allObjects.map { (each) -> MediaItem in
             return MediaItem(withRawValue: each as! MediaItem_)
             }.sorted(by: { (a, b) -> Bool in
                 a.trackNumber < b.trackNumber
             })
-
+        self.items = self.allItems?.filter({ (item: MediaItem) -> Bool in
+            return item.mediaType != .Representative
+        }).sorted(by: { (a, b) -> Bool in
+            a.trackNumber < b.trackNumber
+        })
         if value.representativeItem != nil {
             self.representativeItem = MediaItem(withRawValue: value.representativeItem!)
         }

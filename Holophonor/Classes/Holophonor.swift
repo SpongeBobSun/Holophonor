@@ -293,8 +293,7 @@ open class Holophonor: NSObject {
                 genre?.mpPersistenceID = "\(item.genrePersistentID.littleEndian)"
             }
         }
-        genre?.addToItems((artist?.representativeItem)!)
-        artist?.representativeItem?.fromCollection = genre
+        artist?.addToItems((genre?.representativeItem)!)
 
         wrapped.albumPersistentID = album?.persistentID
         wrapped.artistPersistentID = artist?.persistentID
@@ -522,12 +521,12 @@ open class Holophonor: NSObject {
             toAdd.representativeItem = repItem
             toAdd.collectionType = CollectionType.Genre.rawValue
             toAdd.persistentID = UUID().uuidString
+            repItem.genrePersistentID = toAdd.persistentID
             genre = toAdd
         } else {
             genre = result.first!
         }
-        genre?.addToItems((artist?.representativeItem!)!)
-        artist?.representativeItem?.fromCollection = genre
+        artist?.addToItems((genre?.representativeItem)!)
 
         item.albumPersistentID = album?.persistentID
         item.artistPersistentID = artist?.persistentID

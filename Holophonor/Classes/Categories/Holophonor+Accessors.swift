@@ -227,6 +227,26 @@ extension Holophonor {
         })
     }
     
+    public func getAlbumsBy(artistId: String, andGenre genre: String? ) -> [MediaCollection] {
+        if self.reloading {
+            return []
+        }
+        var ret: [MediaCollection_] = []
+        let albumFilter = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.artistPersistentID == %@)",
+                                 CollectionType.Album.rawValue,
+                                 artistId)
+        var filters = [albumFilter]
+        if genre != nil && genre?.count != 0 {
+            let genreFilter = NSPredicate(format: "ANY items.genrePersistentID == %@", genre!)
+            filters.append(genreFilter)
+        }
+        let filter = NSCompoundPredicate(andPredicateWithSubpredicates: filters)
+        ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "representativeItem.albumTitle", ascending: true)])
+        return ret.map({ (item_) -> MediaCollection in
+            return MediaCollection(withRawValue: item_)
+        })
+    }
+    
     public func getAlbumsBy(artistId: String) -> [MediaCollection] {
         if self.reloading {
             return []
@@ -241,20 +261,21 @@ extension Holophonor {
         })
     }
     
-    public func getArtistsBy(genre: String) -> [MediaCollection] {
-        if self.reloading {
+    public func getArtistsBy(genreId: String) -> [MediaCollection] {
+        if self.reloading || genreId.count == 0 {
             return []
         }
         var ret: [MediaCollection_] = []
-        let filter = NSPredicate(format: "(collectionType == %llu) AND (representativeItem.genre == %@)",
+        let filter = NSPredicate(format: "(collectionType == %llu) AND ANY items.mediaType == %llu AND ANY items.genrePersistentID == %@",
                                     CollectionType.Artist.rawValue,
-                                    genre)
+                                    MediaSource.Representative.rawValue,
+                                    genreId)
         ret = doFetch(predict: filter, sortDescriptors: [NSSortDescriptor(key: "representativeItem.artist", ascending: true)])
         return ret.map({ (item_) -> MediaCollection in
             return MediaCollection(withRawValue: item_)
         })
     }
-    
+
     public func getArtistBy(name: String) -> MediaCollection? {
         if self.reloading {
             return nil
