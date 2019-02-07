@@ -9,7 +9,7 @@
 
 ![logo](./imgs/logo.jpg)
 
-Convenience library for managing & querying musics. Written in Swift.
+Convenience library for managing & querying music. Written in Swift.
 
 ## Features
 
