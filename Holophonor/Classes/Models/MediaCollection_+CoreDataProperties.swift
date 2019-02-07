@@ -19,7 +19,6 @@ extension MediaCollection_ {
     @NSManaged public var collectionType: Int64
     @NSManaged public var mpPersistenceID: String?
     @NSManaged public var persistentID: String?
-    @NSManaged public var representativeID: String?
     @NSManaged public var representativeTitle: String?
     @NSManaged public var items: NSSet?
     @NSManaged public var representativeItem: MediaItem_?

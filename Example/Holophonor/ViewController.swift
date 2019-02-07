@@ -187,7 +187,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         } else if inputAlbum.isUserInteractionEnabled {
             popAlert(title: "Unsupport query dimension")
         } else if inputGenre.isUserInteractionEnabled {
-            let collections = holo.getArtistsBy(genre: inputArtist.text ?? "")
+            let collections: [MediaCollection] = [] // holo.getArtistsBy(genre: inputArtist.text ?? "")
             items = []
             for collection in collections {
                 items.append(collection.representativeItem!)
@@ -303,7 +303,7 @@ class MediaItemCell: UITableViewCell {
         let text = "Type:".appending(dimension == .Album ? "album" : dimension == .Artist ? "artist" : "song")
             .appending("\nEntitled:")
             .appending(dimension == .Album ? item.albumTitle ?? "" : dimension == .Artist ? item.artist ?? "" : item.title ?? "")
-            .appending("\nLocation: ").appending(item.mediaType == MediaSource.iTunes.rawValue ? "iTunes" : "Local")
+            .appending("\nLocation: ").appending(item.mediaType == MediaSource.iTunes ? "iTunes" : "Local")
             
         label.text = text
     }

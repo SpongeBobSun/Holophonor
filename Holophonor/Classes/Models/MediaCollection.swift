@@ -11,7 +11,6 @@ public class MediaCollection: CustomStringConvertible {
     public var collectionType: Int64
     public var mpPersistenceID: String?
     public var persistentID: String?
-    public var representativeID: String?
     public var representativeTitle: String?
     public var items: [MediaItem]?          // Solid items which representive a file on disk
     public var allItems: [MediaItem]?       // All items contains representative items
@@ -22,7 +21,6 @@ public class MediaCollection: CustomStringConvertible {
         self.collectionType = Int64(value.collectionType)
         self.mpPersistenceID = value.mpPersistenceID == nil ? nil : String(value.mpPersistenceID!)
         self.persistentID = value.persistentID == nil ? nil : String(value.persistentID!)
-        self.representativeID = value.representativeID == nil ? nil : String(value.representativeID!)
         self.representativeTitle = value.representativeTitle == nil ? nil : String(value.representativeTitle!)
         self.allItems = value.items?.allObjects.map { (each) -> MediaItem in
             return MediaItem(withRawValue: each as! MediaItem_)

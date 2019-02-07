@@ -74,6 +74,15 @@ open class Holophonor: NSObject {
         return self
     }
     
+    open func removeLocalDirectory(dir: String) -> Holophonor {
+        let idx = localDirectories.index(of: dir) ?? -1
+        if idx < 0 {
+            return self
+        }
+        localDirectories.remove(at: idx)
+        return self
+    }
+    
     open func rescan(_ force: Bool = false, complition: @escaping () -> Void) -> Void {
         if self.reloading {
             return
