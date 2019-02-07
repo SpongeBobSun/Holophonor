@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'Holophonor'
   s.version          = '0.1.0'
-  s.summary          = 'Convenience library for managing & querying musics. Written in Swift.'
+  s.summary          = 'Convenience library for managing & querying musics.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -19,6 +19,7 @@ Pod::Spec.new do |s|
 
   s.description      = <<-DESC
     Convenience library for managing & querying musics. Written in Swift.
+    More documents in: https://github.com/SpongeBobSun/Holophonor
                        DESC
 
   s.homepage         = 'https://github.com/SpongeBobSun/Holophonor'
@@ -28,6 +29,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/SpongeBobSun/Holophonor.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
+  s.swift_version = '4.2'
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'Holophonor/Classes/**/*'
