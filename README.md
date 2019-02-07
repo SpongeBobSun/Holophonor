@@ -205,13 +205,12 @@ To run the example project:
 
 From [Futurama Wiki](https://futurama.fandom.com/wiki/Holophonor)
 
-```
-The Holophonor is a musical instrument of the 30th Century, it is best described as a combination of an Oboe and a Holographic Projector.
+*The Holophonor is a musical instrument of the 30th Century, it is best described as a combination of an Oboe and a Holographic Projector.*
 
-...
+*...*
 
-According to the commentary for Parasites Lost, the holophoner is based on the Visi-Sonor from Isaac Asimov's Foundation Trilogy published in 1951 to 1953. A similiar idea, the Sensory Syrinx, was created by Samuel R. Delany for his novel 'Nova' published in 1968.
-```
+*According to the commentary for Parasites Lost, the holophoner is based on the Visi-Sonor from Isaac Asimov's Foundation Trilogy published in 1951 to 1953. A similiar idea, the Sensory Syrinx, was created by Samuel R. Delany for his novel 'Nova' published in 1968.*
+
 
 ## Author
 
