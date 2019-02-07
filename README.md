@@ -1,6 +1,6 @@
 # Holophonor
 
-[![CI Status](http://img.shields.io/travis/sponegbobsun/Holophonor.svg?style=flat)](https://travis-ci.org/sponegbobsun/Holophonor)
+[![CI Status](http://img.shields.io/travis/SpongeBobSun/Holophonor.svg?style=flat)](https://travis-ci.org/SpongeBobSun/Holophonor)
 [![Version](https://img.shields.io/cocoapods/v/Holophonor.svg?style=flat)](http://cocoapods.org/pods/Holophonor)
 [![License](https://img.shields.io/cocoapods/l/Holophonor.svg?style=flat)](http://cocoapods.org/pods/Holophonor)
 [![Platform](https://img.shields.io/cocoapods/p/Holophonor.svg?style=flat)](http://cocoapods.org/pods/Holophonor)
