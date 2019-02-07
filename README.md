@@ -5,7 +5,11 @@
 [![License](https://img.shields.io/cocoapods/l/Holophonor.svg?style=flat)](http://cocoapods.org/pods/Holophonor)
 [![Platform](https://img.shields.io/cocoapods/p/Holophonor.svg?style=flat)](http://cocoapods.org/pods/Holophonor)
 
-Convenience library for managing & querying musics written in Swift.
+
+
+![logo](./imgs/logo.jpg)
+
+Convenience library for managing & querying musics. Written in Swift.
 
 ## Features
 
@@ -43,7 +47,6 @@ A media item can be a song or a representative item which can represent for an a
 A `MediaCollection` is a collection of `MediaItem`. 
 
 A `MediaCollection` contains a representative item which contains meta data of this collection.
-
 
 `MediaCollection` works like `MPMediaItemCollection` in iOS's `MediaPlayer` framework.
 #### Representative Item
@@ -100,11 +103,9 @@ During initialization, Holophonor will save its database file in -
 
 ### Local Directories
 
-Holophonor will search music in local directories and will automatically add `Documents` folder to its scan path during initialization.
+Holophonor will search music in local directories and automatically add `Documents` folder to its scan path during initialization.
 
 To add or remove a local directory from scan path, use below functions **before** rescan the library.
-
-Use below functions to add or remove directories.
 
 ```swift
 addLocalDirectory(dir: String)
@@ -128,17 +129,13 @@ rescan(_ force: Bool = false, completion: @escaping () -> Void)
 You can observe the rescan progress by subscribe the progress subject.
 
 ```swift
-    open func observeProgress() -> PublishSubject<Int64> {
-        return self.progressObservable
-    }
+observeProgress() -> PublishSubject<Int64> 
 ```
 
 Also you can get a notification when recan started.
 
 ```swift
-open func observeRescan() -> PublishSubject<Bool> {
-        return self.rescanObservable
-    }
+observeRescan() -> PublishSubject<Bool>
 ```
 
 ### Queries
@@ -194,15 +191,27 @@ songs.forEach({ (each) in
 })
 ```
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
-## Requirements
-
+To run the example project:
+* clone the repo
+* run `bundle install && bundle exec pod install` from the Example directory
+* open `Holophonor.xcworkspace`
+* hit the run button
 
 ## APPs using this library
 
+* [Prodigal Music Player](https://github.com/SpongeBobSun/Prodigal-iOS)
+
 ## About the name
 
+From [Futurama Wiki](https://futurama.fandom.com/wiki/Holophonor)
+
+```
+The Holophonor is a musical instrument of the 30th Century, it is best described as a combination of an Oboe and a Holographic Projector.
+
+...
+
+According to the commentary for Parasites Lost, the holophoner is based on the Visi-Sonor from Isaac Asimov's Foundation Trilogy published in 1951 to 1953. A similiar idea, the Sensory Syrinx, was created by Samuel R. Delany for his novel 'Nova' published in 1968.
+```
 
 ## Author
 
