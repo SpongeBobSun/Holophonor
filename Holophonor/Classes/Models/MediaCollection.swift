@@ -38,7 +38,7 @@ public class MediaCollection: CustomStringConvertible {
     }
     
     open func getArtworkWithSize(size: CGSize) -> UIImage? {
-        if _collectionArtwork != nil {
+        if _collectionArtwork != nil && _collectionArtwork?.size.equalTo(size) ?? false {
             return _collectionArtwork;
         }
         if self.items?.count ?? 0 > 0 {

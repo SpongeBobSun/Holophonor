@@ -48,7 +48,7 @@ public class MediaItem: Hashable, CustomStringConvertible {
     }
     
     open func getArtworkWithSize(size: CGSize) -> UIImage? {
-        if self._itemArtwork != nil {
+        if self._itemArtwork != nil && self._itemArtwork?.size.equalTo(size) ?? false {
             return self._itemArtwork;
         }
         switch self.mediaType {
